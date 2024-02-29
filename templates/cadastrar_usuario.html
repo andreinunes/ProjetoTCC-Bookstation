@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<h2 style = "text-align: center;">Cadastre-se</h2>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alert alert-warning" role="alert">
+  <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+{% endwith %}
+<form method='post' action = '/usuarios/cadastrar'>
+  <div class="mb-3">
+    <label for="nomeUsuario" class="form-label">Nome do Usuário</label>
+    <input type="text" class="form-control" id="nomeUsuario" name="nomeUsuario">
+  </div>
+  <div class="mb-3">
+    <label for="emailUsuario" class="form-label">Email do usuário</label>
+    <input type="email" class="form-control" id="emailUsuario" name="emailUsuario">
+  </div>
+  <div class="mb-3">
+    <label for="senhaUsuario" class="form-label">Senha</label>
+    <input type="password" class="form-control" id="senhaUsuario" name="senhaUsuario" >
+  </div>
+  <div class="mb-3">
+    <label for="confirmacaoSenhaUsuario" class="form-label">Confirme a senha</label>
+    <input type="password" class="form-control" id="confirmacaoSenhaUsuario" name="confirmacaoSenhaUsuario" >
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock conteudo %}
