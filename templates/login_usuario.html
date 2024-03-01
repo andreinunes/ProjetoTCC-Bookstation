@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alert alert-warning" role="alert">
+  <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+{% endwith %}
+<div class="row justify-content-md-center">
+  <div class="col-12 col-md-7">
+    <div class="bg-white p-4 p-md-5 rounded shadow-sm">
+      <div class="row">
+        <div class="col-12">
+          <div class="text-center mb-5">
+            <h2 style = "text-align: center;">Login</h2>
+          </div>
+        </div>
+      </div>
+      <form method='post' action = ''>
+        {{form_login.csrf_token}}
+        <div class="row gy-3 gy-md-4 overflow-hidden">
+          <div class="col-12">
+            <label class="form-label">Email do usuário</label>
+            {{ form_login.email(class="form-control", placeholder="Digite seu email") }}
+
+            {% if form_login.errors.email %}
+            <div class = "alert alert-danger" role="alert">
+              <ul>
+              {% for e in form_login.errors.email %}
+                <li>{{ e }}</li>
+              {% endfor %} 
+              </ul>
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-12">
+            <label class="form-label">Senha</label>
+                {{ form_login.senha(class="form-control") }}
+
+                {% if form_login.errors.senha %}
+                <div class = "alert alert-danger" role="alert">
+                  <ul>
+                  {% for e in form_login.errors.senha %}
+                    <li>{{ e }}</li>
+                  {% endfor %} 
+                  </ul>
+                </div>
+                {% endif %}
+          </div>
+          <div class="checkbox">
+            <label>{{ form_login.lembrar }} Lembrar-se de mim</label>
+          </div>
+          <div class="col-12">
+            <div class="d-grid">
+              <button class="btn btn-primary btn-lg" type="submit">Logar</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock conteudo %}
