@@ -1,5 +1,6 @@
 import sys
-from flask import render_template, redirect, url_for, request, abort,flash
+import re
+from flask import render_template, redirect, url_for, request, abort,flash, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from modelos.usuarios_modelo import Usuario
 from modelos.formularios_modelo import LoginForm
@@ -32,45 +33,37 @@ def cadastrar():
       usuario = Usuario(nome, email, senha)
       db.session.add(usuario)
       db.session.commit()
+      login_user(usuario)
       return redirect(url_for('indice'))
 
-def verificar_senha(senha):
-  """
-  Verifica a "força" da senha
-  Senha forte:
-      8 caracteres ou mais 
-      1 digito ou mais
-      1 simbolo ou mais
-      1 letra maiuscula ou mais
-      1 letra minuscula ou mais
-  """
 
-  # calculating the length
-  length_error = len(password) < 8
+
+def checar_senha():
+  senha_entrada = request.args.get('senhaUsuario', '')
+  resultado = verificar_forca_senha(senha_entrada)
+  return jsonify({"resultado": resultado})
+
+
+def verificar_forca_senha(senha):
+  tamanho_minimo = 8
+  maiusculo_regex = re.compile(r'[A-Z]')
+  minusculo_regex = re.compile(r'[a-z]')
+  digito_regex = re.compile(r'\d')
+  caracter_especial_regex = re.compile(r'[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]')
   
-  # searching for digits
-  digit_error = re.search(r"\d", password) is None
+  if len(senha) < tamanho_minimo:
+      return "Senha Fraca: Senha deve conter no minimo {} caracteres".format(tamanho_minimo)
   
-  # searching for uppercase
-  uppercase_error = re.search(r"[A-Z]", password) is None
+  if not maiusculo_regex.search(senha) or not minusculo_regex.search(senha):
+      return "Senha Fraca: Senha deve conter no minimo uma letra maiuscula e uma minuscula"
   
-  # searching for lowercase
-  lowercase_error = re.search(r"[a-z]", password) is None
+  if not digito_regex.search(senha):
+      return "Senha fraca: Senha deve conter no mínimo um digito"
   
-  # searching for symbols
-  symbol_error = re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~"+r'"]', password) is None
+  if not caracter_especial_regex.search(senha):
+      return "Senha fraca: Senha deve conter pelo menos um caractere especial"
   
-  # overall result
-  password_ok = not ( length_error or digit_error or uppercase_error or lowercase_error or symbol_error )
-  
-  return {
-      'password_ok' : password_ok,
-      'length_error' : length_error,
-      'digit_error' : digit_error,
-      'uppercase_error' : uppercase_error,
-      'lowercase_error' : lowercase_error,
-      'symbol_error' : symbol_error,
-  }
+  return ""
 
 def login():
   if current_user.is_authenticated:

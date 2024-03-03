@@ -22,7 +22,7 @@
             </div>
           </div>
         </div>
-        <form method='post' action = '/usuarios/cadastrar'>
+        <form id = "formularioCadastro" method='post' action = '/usuarios/cadastrar'>
           <div class="row gy-3 gy-md-4 overflow-hidden">
             <div class="col-12">
               <label for="nomeUsuario" class="form-label">Nome do Usuário</label>
@@ -37,12 +37,15 @@
               <input type="password" class="form-control" id="senhaUsuario" name="senhaUsuario" required>
             </div>
             <div class="col-12">
+              <div class="alert alert-secondary" role="alert" id="resultadoForcaSenha" style = "display:none;" >name="senhaUsuario" required>
+            </div>
+            <div class="col-12">
               <label for="confirmacaoSenhaUsuario" class="form-label">Confirme a senha</label>
               <input type="password" class="form-control" id="confirmacaoSenhaUsuario" name="confirmacaoSenhaUsuario" required >
             </div>
             <div class="col-12">
               <div class="d-grid">
-                <button class="btn btn-primary btn-lg" type="submit">Cadastrar</button>
+                <button class="btn btn-primary btn-lg" type="button" onclick="checkPasswordStrength()">Cadastrar</button>
               </div>
             </div>
           </div>
@@ -50,4 +53,21 @@
       </div>
     </div>
   </div>
+
+<script>
+async function checkPasswordStrength() {
+            const senhaParaChecar = document.getElementById('senhaUsuario').value;
+            let resposta = await fetch(`/usuarios/checar-senha?senhaUsuario=${senhaParaChecar}`);
+            let dados = await resposta.json();
+            if (dados.resultado != ""){
+              document.getElementById('resultadoForcaSenha').textContent = dados.resultado;
+              document.getElementById('resultadoForcaSenha').style.display = "block";
+            }
+            else{
+              document.getElementById("formularioCadastro").submit();
+            }
+
+        }
+</script>
+
 {% endblock conteudo %}
