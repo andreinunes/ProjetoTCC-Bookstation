@@ -4,7 +4,10 @@ from flask_migrate import Migrate
 from flask_login import LoginManager,current_user
 from database import db
 from rotas.usuarios_bp import usuarios_bp
+from rotas.livros_bp import livros_bp
 from modelos.usuarios_modelo import Usuario
+import requests
+import random
 
 from datetime import timedelta
 
@@ -16,6 +19,8 @@ migrate = Migrate(app, db)
 lm = LoginManager()
 lm.init_app(app)
 app.register_blueprint(usuarios_bp, url_prefix='/usuarios')
+app.register_blueprint(livros_bp, url_prefix='/livros')
+
 
 @lm.user_loader
 def load_user(id):
@@ -28,6 +33,7 @@ def indice():
 @app.route("/logo_provisorio.png") 
 def logo(): 
   return send_file("imagens/logo_provisorio.png", mimetype="image/png")
+
 
 @app.before_request
 def before_request():

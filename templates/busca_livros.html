@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<h2 style="text-align: center;">Lista de Livros</h2>
+  <div class="container">
+    <div class="row pt-5">
+      <div class="col-12">
+      </div>
+    </div>
+    <div class="row">
+  {% for livro in livros %}
+      <div class="col-lg-4 mb-3 d-flex align-items-stretch">
+        <div class="card">
+           {% if livro.volumeInfo.imageLinks%}
+      <img src="{{livro.volumeInfo.imageLinks.thumbnail}}" class="card-img-top" alt="Card Image">
+      {% endif %}
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{livro.volumeInfo.title}} {{livro.volumeInfo.subtitle}}</h5>
+            {% if livro.volumeInfo.authors%}
+      <p class="card-text mb-4">Autor: {{livro.volumeInfo.authors[0]}}</p>
+      {% endif %}
+
+          </div>
+        </div>
+      </div>
+     {% endfor %}
+    </div>
+  </div>
+
+{% endblock conteudo %}
