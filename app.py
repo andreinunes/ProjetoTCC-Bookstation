@@ -12,7 +12,7 @@ import random
 from datetime import timedelta
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.config.from_object('config')
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -30,10 +30,18 @@ def load_user(id):
 def indice():
     return render_template('indice.html')
 
-@app.route("/logo_provisorio.png") 
-def logo(): 
-  return send_file("imagens/logo_provisorio.png", mimetype="image/png")
+@app.route("/imagem_indisponivel.png") 
+def imagem_indisponivel(): 
+  return send_file("imagens/imagem_indisponivel.png", mimetype="image/png")
 
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('erro.html', erro = 404), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('erro.html',erro = 500), 500
 
 @app.before_request
 def before_request():

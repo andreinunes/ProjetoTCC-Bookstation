@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<div class="d-flex align-items-center justify-content-center vh-100">
+          <div class="text-center">
+            {% if erro == 404 %}
+            <h1 class="display-1 fw-bold">404</h1>
+            <p class="fs-3">Página não encontrada.</p>
+            <p class="lead">
+                A página que você está procurando não foi encontrada.
+              </p>
+            {% else %}
+            <h1 class="display-1 fw-bold">500</h1>
+            <p class="fs-3">Erro do servidor interno.</p>
+            <p class="lead">
+                O servidor encontrou um erro e não pode processar sua requisição.
+              </p>
+            {% endif %}
+        </div>
+</div>
+
+
+{% endblock conteudo %}
