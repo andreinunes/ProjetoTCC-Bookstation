@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 
-{{teste}}
+<script type="text/javascript">
+        function auxiliar_busca(){ document.getElementById("buscaLivro").value = "{{textoBuscaLivro}}";}
+        auxiliar_busca();
+</script>
 
-<div class="container text-center">
+
+<div class="container text-center" id = "Conteúdo">
   <h2 style="text-align: center;">Lista de Livros</h2>
 {% for livro in livros %}
   <div class="row" style = "margin-left: auto; margin-right:auto; margin-bottom:10px; max-width:60%;border-radius:30px; padding:3px; background: linear-gradient(#4337d440, rgba(0, 0, 0, 0));">
     <div class="col-md-3">
       
       {% if livro.linkCapa%}
-      <img src="{{livro.linkCapa}}" style = "border-radius:30px;">
+      <a href="/livros/paginalivro/{{livro.id}}"><img src="{{livro.linkCapa}}" style = "border-radius:30px;"></a>
       {% else %}
-      <img src="/static/images/imagem_indisponivel.png" style = "border-radius:30px;">
+      <a href="/livros/paginalivro/{{livro.id}}"><img src="/static/images/imagem_indisponivel.png" style = "border-radius:30px;"></a>
       {% endif %}
     </div>
 
@@ -22,13 +26,24 @@
           {% if livro.autores%}
             Autor(es):
             {% for autores in livro.autores%}
-              <div class = "autorLivro"><a href="/livros/buscarLivros/{{autores}}" style= "color:black;">{{autores}}</a></div>
+              <div class = "autorLivro"><a href="{{url_for('livros_bp.buscar_por_autor', nomeAutor = autores, indiceInicial = 0 )}}" style= "color:black;">{{autores}}</a></div>
             {% endfor %}
           {% endif %}
-      </div>   
+      </div>
   </div>
 
 {% endfor %}
+  {% if possuiProximo == 1 or indiceInicial !=0 %}
+    {% if indiceInicial == 0 %}
+      <a disabled>Anterior</a>
+    {% else %}
+      <a href="/livros/{{tipoDeBusca}}/{{textoBuscaLivro}}/{{indiceInicial-40}}" >Anterior</a>
+    {% endif %}
+    {% if possuiProximo == 0 %}
+      <a disabled>Próximo</a>
+    {% else %}
+      <a href="/livros/{{tipoDeBusca}}/{{textoBuscaLivro}}/{{indiceInicial+40}}">Próximo</a>
+    {% endif %}
+  {% endif %}
 </div>
-
 {% endblock conteudo %}

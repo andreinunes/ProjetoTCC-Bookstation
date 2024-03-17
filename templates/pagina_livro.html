@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<div class = "container" style="padding-top:40px">
+  <div class="row">
+    <div class="col-md-2">
+      {% if livro.linkCapa%}
+      <img src="{{livro.linkCapa}}" style = "border-radius:15px; width:110%;">
+      {% else %}
+      <img src="/static/images/imagem_indisponivel.png" style = "border-radius:15px;">
+      {% endif %}
+    </div>
+    <div class="col-md-10 style = "padding-left:50px">
+      <div class = "container">
+        <div class="row" style = "padding:10px;">
+          <h3>{{livro.titulo}}</h3>
+          <h4>{{livro.subtitulo}}</h4>
+          {% if livro.autores%}
+              <div class = "autorLivro"><a href="/livros/buscarLivros/{{livro.autores[0]}}" style= "color:black;text-decoration:none;"><h5>{{livro.autores[0]}}</h5></a></div>
+          {% endif %}
+        </div>
+        <div class="row" style = "padding:10px;">
+         <span>{% if livro.descricao%}
+            {{livro.descricao}}
+        {% endif%}</span>
+        </div>
+        <div class="row" style = "padding:10px;">
+          <span style = "opacity:0.7;">Genêros</span>
+          {% if livro.categorias%}
+            
+            <span style = display:inline;>{{livro.categorias}}</span>
+            
+          {% endif %}
+        </div>
+        <div class="row" style = "padding:10px;">
+          <span style = "opacity:0.7;">Genêros</span>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock conteudo %}

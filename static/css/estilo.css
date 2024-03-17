@@ -15,7 +15,6 @@
 .autorLivro{
   display: -webkit-box;
   overflow: hidden;
-  margin: 16px 0;
   color: black;
   text-overflow: ellipsis;
   cursor: pointer;
