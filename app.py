@@ -6,6 +6,7 @@ from database import db
 from rotas.usuarios_bp import usuarios_bp
 from rotas.livros_bp import livros_bp
 from modelos.usuarios_modelo import Usuario
+from modelos.livros_generos_modelo import Livro_Genero
 import requests
 import random
 

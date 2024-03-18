@@ -7,43 +7,70 @@
 </script>
 
 
-<div class="container text-center" id = "Conteúdo">
-  <h2 style="text-align: center;">Lista de Livros</h2>
-{% for livro in livros %}
-  <div class="row" style = "margin-left: auto; margin-right:auto; margin-bottom:10px; max-width:60%;border-radius:30px; padding:3px; background: linear-gradient(#4337d440, rgba(0, 0, 0, 0));">
-    <div class="col-md-3">
-      
-      {% if livro.linkCapa%}
-      <a href="/livros/paginalivro/{{livro.id}}"><img src="{{livro.linkCapa}}" style = "border-radius:30px;"></a>
-      {% else %}
-      <a href="/livros/paginalivro/{{livro.id}}"><img src="/static/images/imagem_indisponivel.png" style = "border-radius:30px;"></a>
-      {% endif %}
-    </div>
-
-      <div class = "col-md-9">
-        <h5>{{livro.titulo}}</h5>
-        <h6>{{livro.subtitulo}}</h6>
-          {% if livro.autores%}
-            Autor(es):
-            {% for autores in livro.autores%}
-              <div class = "autorLivro"><a href="{{url_for('livros_bp.buscar_por_autor', nomeAutor = autores, indiceInicial = 0 )}}" style= "color:black;">{{autores}}</a></div>
-            {% endfor %}
-          {% endif %}
+{% if livros %}
+  <div class="container text-center" id = "Conteúdo" style = "padding-top:10px;">
+    {% if generoBuscado%}
+      <h4 style="text-align: center;"> <b>{{generoBuscado}}</b></h4>
+    {% else %}
+    <h4 style="text-align: left;">Resultado da busca: {{textoBuscaLivro}}</h4>
+    {% endif %}
+  {% for livro in livros %}
+    <div class="row" style = "margin-left: auto; margin-right:auto; margin-bottom:10px; max-width:60%;border-radius:30px; padding:3px; background: linear-gradient(#4337d440, rgba(0, 0, 0, 0));">
+      <div class="col-md-3" onclick="loading();">
+        
+        {% if livro.linkCapa%}
+        <a href="/livros/paginalivro/{{livro.id}}"><img src="{{livro.linkCapa}}" style = "border-radius:30px;"></a>
+        {% else %}
+        <a href="/livros/paginalivro/{{livro.id}}"><img src="/static/images/imagem_indisponivel.png" style = "border-radius:30px;"></a>
+        {% endif %}
       </div>
+  
+        <div class = "col-md-9">
+          <h5>{{livro.titulo}}</h5>
+          <h6>{{livro.subtitulo}}</h6>
+            {% if livro.autores%}
+              Autor(es):
+              {% for autores in livro.autores%}
+                <div onclick="loading();"><a class = "autorLivro" href="{{url_for('livros_bp.buscar_por_autor', nomeAutor = autores, indiceInicial = 0 )}}" style= "color:black;">{{autores}}</a></div>
+              {% endfor %}
+            {% endif %}
+
+          {% if livro.categorias%}
+            <span onclick="loading();" style = "display:inline">
+            {% for categoria in livro.categorias%}
+              <a class = "linkGenero" href="/livros/buscarLivrosGenero/{{categoria}}/0">{{categoria}}</a>
+            {% endfor %}
+              </span>
+          {% endif %}
+        </div>
+    </div>
+  
+  {% endfor %}
+    <div onclick="loading();">
+    {% if possuiProximo == 1 or indiceInicial !=0 %}
+      {% if indiceInicial == 0 %}
+        <a disabled>Anterior</a>
+      {% else %}
+        <a href="/livros/{{tipoDeBusca}}/{{textoBuscaLivro}}/{{indiceInicial-40}}" >Anterior</a>
+      {% endif %}
+      {% if possuiProximo == 0 %}
+        <a disabled>Próximo</a>
+      {% else %}
+        <a href="/livros/{{tipoDeBusca}}/{{textoBuscaLivro}}/{{indiceInicial+40}}">Próximo</a>
+      {% endif %}
+    {% endif %}
+    </div>
   </div>
 
-{% endfor %}
-  {% if possuiProximo == 1 or indiceInicial !=0 %}
-    {% if indiceInicial == 0 %}
-      <a disabled>Anterior</a>
-    {% else %}
-      <a href="/livros/{{tipoDeBusca}}/{{textoBuscaLivro}}/{{indiceInicial-40}}" >Anterior</a>
-    {% endif %}
-    {% if possuiProximo == 0 %}
-      <a disabled>Próximo</a>
-    {% else %}
-      <a href="/livros/{{tipoDeBusca}}/{{textoBuscaLivro}}/{{indiceInicial+40}}">Próximo</a>
-    {% endif %}
-  {% endif %}
+{% else %}
+<div class="d-flex align-items-center justify-content-center vh-100">
+          <div class="text-center">
+            <h1 class="display-1 fw-bold"></h1>
+            <p class="fs-3">Não há resultados</p>
+            <p class="lead">
+                Não há resultados de livros para sua busca: {{textoBuscaLivro}}
+            </p>
+        </div>
 </div>
+{% endif %}
 {% endblock conteudo %}

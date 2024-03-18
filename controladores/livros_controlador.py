@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, abort, flash, jsonify
 import requests, urllib.request, json, re
 from urllib.parse import quote
-from controladores.auxiliar_generos import buscar_genero_webscrapper,remove_html_tags
+from controladores.generos_controlador import buscar_genero_webscrapper,remove_html_tags,verificar_genero,getGeneroChave
 
 
 API_KEY = 'AIzaSyBJSFy6VtqvSEJeHk9h8tCgWpgJSht00ac'
@@ -49,6 +49,8 @@ def buscar_por_titulo(nomeLivro, indiceInicial):
   if 'items' in jsondata:
     for livro in jsondata['items']:
       dict_livro = gerar_dictionary_livro(livro)
+      generosDoLivro = buscar_genero_webscrapper(dict_livro['id'],dict_livro['categorias'])
+      dict_livro['categorias'] = generosDoLivro
       prioridade = verificar_prioridade(dict_livro,textoAntesFormatacao)
       if prioridade == 1:
         livros.append(dict_livro)
@@ -86,6 +88,8 @@ def buscar_por_autor(nomeAutor, indiceInicial):
   if 'items' in jsondata:
     for livro in jsondata['items']:
       dict_livro = gerar_dictionary_livro(livro)
+      generosDoLivro = buscar_genero_webscrapper(dict_livro['id'],dict_livro['categorias'])
+      dict_livro['categorias'] = generosDoLivro
       livros.append(dict_livro)
 
   return render_template("busca_livros.html",
@@ -99,7 +103,9 @@ def buscar_por_autor(nomeAutor, indiceInicial):
 
 
 def buscar_por_genero(genero, indiceInicial):
-  
+
+  textoBuscaLivro = genero
+  genero = verificar_genero(genero)
   genero = formatar_palavra_busca(genero)
 
   livros = []
@@ -121,6 +127,8 @@ def buscar_por_genero(genero, indiceInicial):
   if 'items' in jsondata:
     for livro in jsondata['items']:
       dict_livro = gerar_dictionary_livro(livro)
+      generosDoLivro = buscar_genero_webscrapper(dict_livro['id'],dict_livro['categorias'],textoBuscaLivro)
+      dict_livro['categorias'] = generosDoLivro
       livros.append(dict_livro)
 
   return render_template("busca_livros.html",
@@ -129,32 +137,27 @@ def buscar_por_genero(genero, indiceInicial):
                          tamanho=len(livros),
                          possuiProximo = possuiProximo,
                          indiceInicial = indiceInicial,
-                         textoBuscaLivro=genero,
+                         textoBuscaLivro = textoBuscaLivro,
                          tipoDeBusca = 'buscarLivrosGenero',
+                         generoBuscado = textoBuscaLivro,
                          tipoBusca='Autor',)
 
 
 def buscar_livro_id(id):
 
   url = url_base + '/' + id + '?key=' + API_KEY
-
   jsondata = json.loads(urllib.request.urlopen(url).read())
-
   livro = gerar_dictionary_livro(jsondata)
-
   generosDoLivro = buscar_genero_webscrapper(id,livro['categorias'])
-
+    
   livro['categorias'] = generosDoLivro
   
-
   return render_template("pagina_livro.html", livro=livro)
 
 
 def formatar_palavra_busca(palavraBusca):
   palavraBusca = re.sub(r"[^\w\s]", '', palavraBusca)
-
   palavraBusca = re.sub(r"\s+", '+', palavraBusca)
-
   palavraBusca = urllib.parse.quote(palavraBusca)
 
   return palavraBusca

@@ -1,0 +1,63 @@
+<style>
+.thumbnail {
+  margin-right: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  transform: translate(0, -64px);
+  animation: zoomin 0.5s;
+}
+.thumbnail:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+  transform: translate(0, -10px) scale(1.1);
+}
+
+.autorLivro{
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--secondary-color);
+  text-overflow: ellipsis;
+  cursor: pointer;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-decoration: none;
+}
+
+.autorLivro:hover{
+  text-decoration: underline;
+}
+
+.linkGenero{
+  margin-right: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  color: black;
+}
+
+* {
+ font-family: Times New Roman;
+}
+
+div#loading {
+display: none;
+}
+.loader {
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #3498db;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+</style>

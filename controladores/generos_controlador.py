@@ -2,6 +2,9 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 import requests, urllib.request, json, re
+from modelos.livros_generos_modelo import Livro_Genero
+from flask_sqlalchemy import SQLAlchemy
+from database import db
 
 
 dicionarioGeneros = {
@@ -10,7 +13,7 @@ dicionarioGeneros = {
     'Action & Adventure' : 'Ação e Aventura',
     'Epic' : 'Épico',
     'Space Opera' : 'Ópera Espacial',
-    'Science Fiction': 'Ficção Cientíca',
+    'Science Fiction': 'Ficção Cientifíca',
     'Fantasy': 'Fantasia',
     'Fiction': 'Ficção',
     'Drama': 'Drama',
@@ -67,36 +70,68 @@ dicionarioGeneros = {
     'True Crime': 'True Crime'
 }
 
-def buscar_genero_webscrapper(id,categorias):
-  headers = {
-     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.87 Safari/537.36",
-  }
-  
-  url = f"https://www.google.com.br/books/edition/%7B%7D/{id}?hl=en"
-  
-  response = requests.get(url, headers = headers) 
-  
-  soup = BeautifulSoup(response.content, 'html.parser')
-  
-  retornos = soup.find_all(class_="fl")
-  
-  lista = []
-  
-  for retorno in retornos:
-    lista.append(str(retorno))
-  
-  for i in range(len(lista)):
-    lista[i] = remove_html_tags(lista[i])
-  
-  listaGenerosWebScrapper = ' '.join(str(e) for e in lista)
-  listaCategoriasAPI = ' '.join(str(e) for e in categorias)
+def buscar_genero_webscrapper(id,categorias, buscaGenero = None):
 
-  stringGeneros = listaGenerosWebScrapper + ' ' + listaCategoriasAPI
+  buscar_livro = Livro_Genero.query.filter_by(id_livro=id).first() 
+  listaGeneroResultado = []
   
-  return stringGeneros
+  if buscar_livro:
+    listaGeneroResultado = []
+    colecaoGenerosLivro = Livro_Genero.query.filter_by(id_livro=id).all()
+    for i in range(len(colecaoGenerosLivro)):
+      listaGeneroResultado.append(colecaoGenerosLivro[i].nome_genero)
+  else:
+    
+    headers = {
+       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.87 Safari/537.36",
+    }
+    
+    url = f"https://www.google.com.br/books/edition/%7B%7D/{id}?hl=en"
+    response = requests.get(url, headers = headers) 
+    soup = BeautifulSoup(response.content, 'html.parser')
+    retornos = soup.find_all(class_="fl")
+    lista = []
+    
+    for retorno in retornos:
+      lista.append(str(retorno))
+    
+    for i in range(len(lista)):
+      lista[i] = remove_html_tags(lista[i])
+    
+    listaGenerosWebScrapper = ' '.join(str(e) for e in lista)
+    listaCategoriasAPI = ' '.join(str(e) for e in categorias)
+    stringGeneros = listaGenerosWebScrapper + ' ' + listaCategoriasAPI
+    listaGeneroResultado = []
+  
+    for chave in dicionarioGeneros.keys():
+      if chave.casefold() in stringGeneros.casefold():
+        listaGeneroResultado.append(dicionarioGeneros[chave])
 
+    for items in list(set(listaGeneroResultado)):
+      livro_genero = Livro_Genero(id, items)
+      db.session.add(livro_genero)
+      db.session.commit()
+      
+  if len(list(set(listaGeneroResultado))) == 0:
+    if buscaGenero != None:
+      livro_genero = Livro_Genero(id, buscaGenero)
+      db.session.add(livro_genero)
+      db.session.commit()
+  
+  return list(set(listaGeneroResultado))
 
 def remove_html_tags(texto):
   padrao_html = re.compile('<.*?>')
   texto_limpo = re.sub(padrao_html, '', texto)
   return texto_limpo
+
+def verificar_genero(genero):
+  for chave in dicionarioGeneros.keys():
+    if chave == genero:
+      return genero
+    if genero ==  dicionarioGeneros[chave]:
+      return chave
+
+
+def getGeneroChave(genero):
+  return dicionarioGeneros[genero]

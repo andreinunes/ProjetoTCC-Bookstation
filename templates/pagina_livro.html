@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 
-<div class = "container" style="padding-top:40px">
+<div id = "Conteúdo" class = "container" style="padding-top:40px">
   <div class="row">
     <div class="col-md-2">
       {% if livro.linkCapa%}
@@ -16,7 +16,7 @@
           <h3>{{livro.titulo}}</h3>
           <h4>{{livro.subtitulo}}</h4>
           {% if livro.autores%}
-              <div class = "autorLivro"><a href="/livros/buscarLivros/{{livro.autores[0]}}" style= "color:black;text-decoration:none;"><h5>{{livro.autores[0]}}</h5></a></div>
+              <div onclick="loading();"><a class = "autorLivro" href="/livros/buscarLivrosAutor/{{livro.autores[0]}}/0"><h5>{{livro.autores[0]}}</h5></a></div>
           {% endif %}
         </div>
         <div class="row" style = "padding:10px;">
@@ -24,17 +24,15 @@
             {{livro.descricao}}
         {% endif%}</span>
         </div>
-        <div class="row" style = "padding:10px;">
+        <div class="row" style = "padding:10px;display:inline;">
           <span style = "opacity:0.7;">Genêros</span>
           {% if livro.categorias%}
-            
-            <span style = display:inline;>{{livro.categorias}}</span>
-            
+            <span onclick="loading();" style = "display:inline">
+            {% for categoria in livro.categorias%}
+              <a class = "linkGenero" href="/livros/buscarLivrosGenero/{{categoria}}/0">{{categoria}}</a>
+            {% endfor %}
+              </span>
           {% endif %}
-        </div>
-        <div class="row" style = "padding:10px;">
-          <span style = "opacity:0.7;">Genêros</span>
-          
         </div>
       </div>
     </div>
