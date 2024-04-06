@@ -3,10 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WebLivros(provisorio)</title>
+  <title>Bookstation</title>
   <link rel="stylesheet" href="{{url_for('static', filename = 'estilo.css')}}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+  <script src="{{url_for('static', filename = 'funcoes.js')}}"></script>
   
 </head>
 <body style = "background-color:#fafafa; padding:50px;">
@@ -15,44 +17,35 @@
    
     <div class="container-fluid">
       
-      <a class="navbar-brand" href="{{url_for('indice')}}">HOME</a>
+      <a class="tituloSite" href="{{url_for('indice')}}" style = "margin-right:10px;">Bookstation</a>
       
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <div class = "container">
-          <div class = "row">
             <div class = "col-md-6">
-              <form class="d-flex align-items-center form-search"  method='post' action = '/livros/busca_livros' style = "width:100%">
+              <form id = "formBusca" class="d-flex align-items-left form-search"  method='GET' action = '' style = "width:100%">
                 <div class="input-group">
-                  <select id= "selectBusca" name = "selectBusca" class="form-select form-select-sm" style="max-width:15%">
+                  <select id= "selectBusca" name = "selectBusca" class="form-select form-select-sm" style="max-width:30%">
                   <option value = "Titulo">Titulo</option>
                   <option value="Autor">Autor</option>
                   </select>
                   <input type="search" class="form-control" placeholder="Busque livros por nome e autor..." id = "buscaLivro" name = "buscaLivro" />
-                  <button onclick="loading();" style = "display: flex;
-                    padding: 4px 12px;
-                    background-color: black;
-                    color:white;
-                    font-weight: 200;
-                    transition: all 0.2s;
-                    align-items: left;" class="btn btn-outline-success" type="submit""><i class="bi bi-search"></i>Buscar</button>
+                  <button id = "botaoBusca" onclick="submitBusca();" class="btn btn-outline-success" type="submit">Buscar</button>
                 </div>
               </form>
             </div>
             <div class = "col-md-3">
               <ul class="navbar-nav me-3">
                 <li class="nav-item" onclick="loading();">
-                  <a class="nav-link active" aria-current="page" href="/livros/buscarLivrosGenero/Fantasia/0" >Fantasia</a>
+                  <a class="nav-link active" aria-current="page" href="/livros/buscarLivrosGenero/Fantasia">Fantasia</a>
                 </li>
                 <li class="nav-item" onclick="loading();">
-                  <a class="nav-link active" aria-current="page" href="/livros/buscarLivrosGenero/Ficção/0">Ficção</a>
+                  <a class="nav-link active" aria-current="page" href="/livros/buscarLivrosGenero/Ficção">Ficção</a>
                 </li>
                 <li class="nav-item" onclick="loading();">
-                  <a class="nav-link active" aria-current="page" href="/livros/buscarLivrosGenero/Drama/0">Drama</a>
+                  <a class="nav-link active" aria-current="page" href="/livros/buscarLivrosGenero/Drama">Drama</a>
                 </li>
                 <li class="nav-item dropdown">
                   <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -60,65 +53,72 @@
                   </button>
                   <ul class="dropdown-menu dropdown-menu-light" style = "    max-height: 400px;
                     overflow-y: auto;">
-                   <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Arquitetura/0">Arquitetura</a></li>
-                     <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ação e Aventura/0">Ação e Aventura</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Arte/0">Arte</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Artes Perfomáticas/0">Artes Perfomáticas</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Artes e Disciplinas da Linguagem/0">Artes e Disciplinas da Linguagem</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Artesanato e passatempos/0">Artesanato e passatempos</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Autobiografia/0">Autobiografia</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Antiguidades e Colecionáveis/0">Antiguidades e Colecionáveis</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Auto-Ajuda/0">Auto-Ajuda</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Auxílios de Estudo/0">Auxílios de Estudo</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Biblia/0">Biblia</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Biografia/0">Biografia</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Casa/0">Casa</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Cozinha/0">Cozinha</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Computadores/0">Computadores</a></li>
-                     <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Corpo,mente e espírito<//0">Corpo,mente e espírito</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ciência/0">Ciência</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ciência Política/0">Ciência Política</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ciência Social/0">Ciência Social</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Coleções Literárias/0">Coleções Literárias</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Criticismo Literário/0">Criticismo Literário</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Design/0">Design</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Direito/0">Direito</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Economias e Negócios/0">Economias e Negócios</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Educação/0">Educação</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Estudo de Língua Estrangeira/0">Estudo de Língua Estrangeira</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Esportes e Recreações/0">Esportes e Recreações</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Épico/0">Épico</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Fotografia/0">Fotografia</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Filosofia/0">Filosofia</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Família e Relacionamento/0">Família e Relacionamento</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Fantasia Urbana/0">Fantasia Urbana</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ficção Juvenil/0">Ficção Juvenil</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ficção Jovem Adulta/0">Ficção Jovem Adulta</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ficção Distópica/0">Ficção Distópica</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ficção Cientifíca/0">Ficção Cientifíca</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/História/0">História</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Humor/0">Humor</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Jogos e Atividades/0">Jogos e Atividades</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Jardinagem/0">Jardinagem</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Matemática/0">Matemática</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Medicina/0">Medicina</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Música/0">Música</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Natureza/0">Natureza</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Não-Ficção Juvenil/0">Não-Ficção Juvenil</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Não-Ficção Jovem Adulta/0">Não-Ficção Jovem Adulta</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Pets/0">Pets</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Poesia/0">Poesia</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Psicologia/0">Psicologia</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ópera Espacial/0">Ópera Espacial</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Religião/0">Religião</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Saúde e Bem-Estar/0">Saúde e Bem-Estar</a></li>
-
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Tecnologia e Engenharia/0">Tecnologia e Engenharia</a></li>
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Transporte/0">Transporte</a></li>
-
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Viagem/0">Viagem</a></li>
-
-                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/True Crime/0">True Crime</a></li>
+                   <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Arquitetura">Arquitetura</a></li>
+                      <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ação">Ação</a></li>
+                     <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Aventura">Aventura</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ação e Aventura">Ação e Aventura</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Arte">Arte</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Artes Perfomáticas">Artes Perfomáticas</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Artes e Disciplinas da Linguagem">Artes e Disciplinas da Linguagem</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Artesanato e passatempos">Artesanato e passatempos</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Autobiografia">Autobiografia</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Antiguidades e Colecionáveis">Antiguidades e Colecionáveis</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Auto-Ajuda">Auto-Ajuda</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Auxílios de Estudo">Auxílios de Estudo</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Biblia">Biblia</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Biografia">Biografia</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Casa">Casa</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Cozinha">Cozinha</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Computadores">Computadores</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Conto">Conto</a></li>
+                     <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Corpo, mente e espírito">Corpo,mente e espírito</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ciência">Ciência</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ciência Política">Ciência Política</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ciência Social">Ciência Social</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Coleções Literárias">Coleções Literárias</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Criticismo Literário">Criticismo Literário</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Design">Design</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Direito">Direito</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Detetive">Detetive</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Economias e Negócios">Economias e Negócios</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Educação">Educação</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Estudo de Língua Estrangeira">Estudo de Língua Estrangeira</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Esportes e Recreações">Esportes e Recreações</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Épico">Épico</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Fotografia">Fotografia</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Filosofia">Filosofia</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Família e Relacionamento">Família e Relacionamento</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Fantasia Urbana">Fantasia Urbana</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ficção Juvenil">Ficção Juvenil</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ficção Jovem Adulta">Ficção Jovem Adulta</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ficção Distópica">Ficção Distópica</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ficção Cientifíca">Ficção Cientifíca</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/História">História</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Humor">Humor</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Jogos e Atividades">Jogos e Atividades</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Jardinagem">Jardinagem</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Matemática">Matemática</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Medicina">Medicina</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Música">Música</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Mistério">Mistério</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Natureza">Natureza</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Não-Ficção Juvenil">Não-Ficção Juvenil</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Não-Ficção Jovem Adulta">Não-Ficção Jovem Adulta</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Pets">Pets</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Poesia">Poesia</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Psicologia">Psicologia</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Policial">Policial</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Política">Política</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Ópera Espacial">Ópera Espacial</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Religião">Religião</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Romance">Romance</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Saúde e Bem-Estar">Saúde e Bem-Estar</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Suspense">Suspense</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Tecnologia e Engenharia">Tecnologia e Engenharia</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Terror">Terror</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Transporte">Transporte</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/Viagem">Viagem</a></li>
+                    <li onclick="loading();"><a class="dropdown-item" href="/livros/buscarLivrosGenero/True Crime">True Crime</a></li>
                   </ul>
                 </li>
               </ul>
@@ -143,8 +143,6 @@
                 {% endif %}
             </ul>
           </div>
-        </div>
-        </div>
       </div>
     </nav>
   <div class = "container">
@@ -154,13 +152,8 @@
 </body>
 </html>
 
-<script type="text/javascript">
-        function loading(){
-          document.getElementById("loading").style.display = "block";
-          document.getElementById("Conteúdo").style.display = "none";    
-        }
+<script type="text/javascript">limpar_url();</script>
 
-</script>
 <div class="container text-center"  style = "padding-top:10px;">
   <div class="row">
     <div class = "col-md-12">

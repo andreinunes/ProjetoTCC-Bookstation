@@ -3,11 +3,21 @@ import pandas as pd
 import time
 import requests, urllib.request, json, re
 from modelos.livros_generos_modelo import Livro_Genero
+from funcoes_auxiliares import remove_html_tags, formatar_palavra_busca,verificar_prioridade,realizar_request_api
 from flask_sqlalchemy import SQLAlchemy
 from database import db
 
 
 dicionarioGeneros = {
+    'Adventure' : 'Aventura',
+    'Action' : 'Ação',
+    'Short Story': 'Conto',
+    'Horror': 'Terror',  
+    'Crime': 'Policial',
+    'Mystery': 'Mistério',
+    'Detective': 'Detetive',
+    'Thriller': "Suspense",
+    'Politics': 'Política',
     'Urban Fantasy'      : 'Fantasia Urbana',
     'Fiction Dystopian'  : 'Ficção Distópica',
     'Action & Adventure' : 'Ação e Aventura',
@@ -28,7 +38,7 @@ dicionarioGeneros = {
     'Antiques & Collectibles': 'Antiguidades e Colecionáveis',
     'Self-Help': 'Auto-Ajuda',
     'Study Aids': 'Auxílios de Estudo',
-    'Bibles': 'Bíblia',
+    'Bibles': 'Biblia',
     'Biography': 'Biografia',
     'House & Home': 'Casa',
     'Cooking': 'Cozinha',
@@ -70,7 +80,7 @@ dicionarioGeneros = {
     'True Crime': 'True Crime'
 }
 
-def buscar_genero_webscrapper(id,categorias, buscaGenero = None):
+def buscar_genero_webscrapper(id,categorias = None, buscaGenero = None):
 
   buscar_livro = Livro_Genero.query.filter_by(id_livro=id).first() 
   listaGeneroResultado = []
@@ -117,13 +127,15 @@ def buscar_genero_webscrapper(id,categorias, buscaGenero = None):
       livro_genero = Livro_Genero(id, buscaGenero)
       db.session.add(livro_genero)
       db.session.commit()
+
+  if buscaGenero not in list(set(listaGeneroResultado)):
+    if buscaGenero != None:
+      livro_genero = Livro_Genero(id, buscaGenero)
+      db.session.add(livro_genero)
+      db.session.commit()
   
   return list(set(listaGeneroResultado))
 
-def remove_html_tags(texto):
-  padrao_html = re.compile('<.*?>')
-  texto_limpo = re.sub(padrao_html, '', texto)
-  return texto_limpo
 
 def verificar_genero(genero):
   for chave in dicionarioGeneros.keys():
@@ -131,7 +143,13 @@ def verificar_genero(genero):
       return genero
     if genero ==  dicionarioGeneros[chave]:
       return chave
+  return "0"
 
 
 def getGeneroChave(genero):
   return dicionarioGeneros[genero]
+
+
+def getColecaoGeneros(genero, page, per_page):
+  colecaoGeneros = Livro_Genero.query.filter_by(nome_genero=genero).paginate(page=page,per_page=per_page)
+  return colecaoGeneros

@@ -3,6 +3,13 @@
 
 <div id = "Conteúdo" class = "container" style="padding-top:40px">
   <div class="row">
+    <div class="col-12" style = "position:absolute; top:6%; left:10%;">
+      {% if urlBusca %}
+      <div onclick="loading();" style="width: fit-content; float:left;"><a class = "anterior" href="{{urlBusca}}">Voltar</a></div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row">
     <div class="col-md-2">
       {% if livro.linkCapa%}
       <img src="{{livro.linkCapa}}" style = "border-radius:15px; width:110%;">
@@ -24,20 +31,64 @@
             {{livro.descricao}}
         {% endif%}</span>
         </div>
-        <div class="row" style = "padding:10px;display:inline;">
-          <span style = "opacity:0.7;">Genêros</span>
-          {% if livro.categorias%}
-            <span onclick="loading();" style = "display:inline">
+        {% if livro.categorias%}
+        <div class="row" style = "padding:10px;">
+          <section style = "white-space:nowrap;">
+            <span style = "opacity:0.7;">Genêros&nbsp;</span>
             {% for categoria in livro.categorias%}
-              <a class = "linkGenero" href="/livros/buscarLivrosGenero/{{categoria}}/0">{{categoria}}</a>
+              <span onclick = "submitGenero('{{categoria}}')" class = "linkGenero">{{categoria}}</span>
             {% endfor %}
-              </span>
-          {% endif %}
+          </section>
         </div>
+        {% endif %}
+        {% if livro.numeroPaginas%}
+          <div class="row" style = "padding:10px;">
+            <section style = "white-space:nowrap;">
+              <span style = "opacity:0.7;display:inline;">Páginas</span>
+              
+                <span style = "display:inline;opacity:0.8;">{{livro.numeroPaginas}}</span>
+            </section>
+          </div>
+        {% endif %}
+        {% if livro.dataPublicacao%}
+          <div class="row" style = "padding:10px;">
+            <section style = "white-space:nowrap;">
+              <span style = "opacity:0.7;display:inline;">Publicação</span>
+                <span style = "display:inline;opacity:0.8;">{{livro.dataPublicacao}} 
+                  {% if livro.editora%}
+                    por {{livro.editora}}
+                  {% endif%}
+                </span>
+            </section>
+          </div>
+        {% endif %}
+        {% if livro.ISBN13%}
+          <div class="row" style = "padding:10px;">
+            <section style = "white-space:nowrap;">
+              <span style = "opacity:0.7;display:inline;">ISBN13</span>
+                <span style = "display:inline;opacity:0.8;">{{livro.ISBN13}}</span>
+            </section>
+          </div>
+        {% endif %}
+        {% if livro.ISBN10%}
+          <div class="row" style = "padding:10px;">
+            <section style = "white-space:nowrap;">
+              <span style = "opacity:0.7;display:inline;">ISBN10</span>
+                <span style = "display:inline;opacity:0.8;">{{livro.ISBN10}}</span>
+            </section>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
 
+<script>
+  function submitGenero(categoria){
+    const url = window.location.origin
+    window.location.replace(url + "/livros/buscarLivrosGenero/" + categoria + "/0");
+    loading();
+  }
+</script>
 
 {% endblock conteudo %}
