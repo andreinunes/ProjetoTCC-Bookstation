@@ -14,12 +14,14 @@
     {% endif %}
   {% for livro in livros %}
     <div class="row" style = "margin-left: auto; margin-right:auto; margin-bottom:10px; max-width:60%;border-radius:30px; padding:3px; background: linear-gradient(#4337d440, rgba(0, 0, 0, 0));">
-      <div class="col-md-3" onclick="submit('{{livro.titulo}}','{{livro.subtitulo}}','{{livro.listaautores}}','{{livro.linkCapa}}','{{livro.descricao}}','{{livro.listacategoria}}','{{livro.dataPublicacao}}','{{livro.ISBN10}}','{{livro.ISBN13}}', '{{livro.editora}}','{{livro.numeroPaginas}}','{{livro.id}}');">
+      <div class="col-md-3">
+        <img onclick = "submit('{{livro.titulo}}','{{livro.subtitulo}}','{{livro.listaautores}}','{{livro.linkCapa}}','{{livro.descricao}}','{{livro.listacategoria}}','{{livro.dataPublicacao}}','{{livro.ISBN10}}','{{livro.ISBN13}}', '{{livro.editora}}','{{livro.numeroPaginas}}','{{livro.id}}');"
         {% if livro.linkCapa%}
-        <img src="{{livro.linkCapa}}" style = "border-radius:30px;">
+          src="{{livro.linkCapa}}"
         {% else %}
-        <img src="/static/images/imagem_indisponivel.png" style = "border-radius:30px;">
+        <img src="/static/images/imagem_indisponivel.png"
         {% endif %}
+        style = "border-radius:30px;">
       </div>
 
         <div class = "col-md-9">
@@ -35,7 +37,7 @@
           {% if livro.categorias%}
             <span onclick="loading();" style = "display:inline">
             {% for categoria in livro.categorias%}
-              <a class = "linkGenero" href="/livros/buscarLivrosGenero/{{categoria}}/0">{{categoria}}</a>
+              <a class = "linkGenero" href="/livros/buscarLivrosGenero/{{categoria}}">{{categoria}}</a>
             {% endfor %}
               </span>
           {% endif %}

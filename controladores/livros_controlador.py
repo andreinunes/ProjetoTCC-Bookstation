@@ -89,7 +89,6 @@ def buscar_por_autor(nomeAutor, indiceInicial):
 
 def buscar_por_genero(genero):
 
-
   page = request.args.get('page',1,type = int)
   per_page = 15
   colecao_genero = getColecaoGeneros(genero,page,per_page)
@@ -101,52 +100,40 @@ def buscar_por_genero(genero):
     dict_livro = gerar_dictionary_livro(jsondata)
     livros.append(dict_livro)
         
-  return render_template("busca_livros_genero.html", colecao_genero = colecao_genero, livros = livros, genero = genero, jsondata=jsondata)
+  return render_template("busca_livros.html", colecao_genero = colecao_genero, livros = livros, generoBuscado = genero, jsondata=jsondata)
 
 
 def buscar_livro_id(id = None):
 
-  tituloLivro = request.args.get('tituloLivro')
-  subtituloLivro = request.args.get('subtituloLivro')
-  autorLivro = request.args.get('autorLivro')
-  generoLivro = request.args.get('generoLivro')
-  linkCapa = request.args.get('linkCapa')
-  descricaoLivro = request.args.get('descricaoLivro')
-  editoraLivro = request.args.get('editoraLivro')
-  idDoLivro = request.args.get('idDoLivro')
-  dataPublicacaoLivro = request.args.get('dataPublicacaoLivro')
-  ISBN10 = request.args.get('ISBN10')
-  ISBN13 = request.args.get('ISBN13')
-  numeroPaginasLivro = request.args.get('numeroPaginasLivro')
-  urlBusca = request.args.get('urlAtual')
-
-  if tituloLivro is None:
-    
+  if request.args.get('tituloLivro') is None:
     url = url_base + '/' + id + '?key=' + API_KEY
     jsondata = realizar_request_api(url)
     livro = gerar_dictionary_livro(jsondata)
     return render_template("pagina_livro.html", livro=livro)
-
-  if autorLivro is None:
-    autorLivro = "#"
-  if generoLivro is None:
-    generoLivro = "#"
-
-  livro = {
-    "titulo": tituloLivro,
-    "subtitulo": subtituloLivro,
-    "autores": autorLivro.split('#'),
-    "linkCapa": linkCapa,
-    "descricao": descricaoLivro,
-    "id": str(idDoLivro),
-    "categorias": generoLivro.split('#'),
-    "dataPublicacao": converter_data(dataPublicacaoLivro),
-    "ISBN10": ISBN10,
-    "ISBN13": ISBN13,
-    "editora": editoraLivro,
-    "numeroPaginas": str(numeroPaginasLivro)
-  }
-  return render_template("pagina_livro.html",livro=livro,urlBusca=urlBusca)
+  else:
+    autorLivro = request.args.get('autorLivro')
+    generoLivro = request.args.get('generoLivro')
+    
+    if autorLivro is None:
+      autorLivro = "#"
+    if generoLivro is None:
+      generoLivro = "#"
+  
+    livro = {
+      "titulo": request.args.get('tituloLivro'),
+      "subtitulo": request.args.get('subtituloLivro'),
+      "autores": autorLivro.split('#'),
+      "linkCapa": request.args.get('linkCapa'),
+      "descricao": request.args.get('descricaoLivro'),
+      "id": str(request.args.get('idDoLivro')),
+      "categorias": generoLivro.split('#'),
+      "dataPublicacao": converter_data(request.args.get('dataPublicacaoLivro')),
+      "ISBN10": request.args.get('ISBN10'),
+      "ISBN13": request.args.get('ISBN13'),
+      "editora": request.args.get('editoraLivro'),
+      "numeroPaginas": str(request.args.get('numeroPaginasLivro'))
+    }
+    return render_template("pagina_livro.html",livro=livro,urlBusca=request.args.get('urlAtual'))
 
 def gerar_dictionary_livro(livro):
   tituloDoLivro = ""
