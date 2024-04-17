@@ -62,6 +62,28 @@ def converter_data(data):
     return data
 
 
+def verificar_forca_senha(senha):
+  tamanho_minimo = 8
+  maiusculo_regex = re.compile(r'[A-Z]')
+  minusculo_regex = re.compile(r'[a-z]')
+  digito_regex = re.compile(r'\d')
+  caracter_especial_regex = re.compile(r'[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]')
+  
+  if len(senha) < tamanho_minimo:
+      return "Senha Fraca: Senha deve conter no minimo {} caracteres".format(tamanho_minimo)
+  
+  if not maiusculo_regex.search(senha) or not minusculo_regex.search(senha):
+      return "Senha Fraca: Senha deve conter no minimo uma letra maiuscula e uma minuscula"
+  
+  if not digito_regex.search(senha):
+      return "Senha fraca: Senha deve conter no mínimo um digito"
+  
+  if not caracter_especial_regex.search(senha):
+      return "Senha fraca: Senha deve conter pelo menos um caractere especial"
+  
+  return ""
+
+
 def getDicionarioGeneros():
   
   dicionarioGeneros = {

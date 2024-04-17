@@ -1,12 +1,9 @@
-import sys
-import re
-from flask import render_template, redirect, url_for, request, abort,flash, jsonify
-from flask_login import login_user, logout_user, current_user, login_required
+from flask import render_template, redirect, url_for, request,flash,jsonify
+from flask_login import logout_user, current_user
 from modelos.usuarios_modelo import Usuario
 from modelos.formularios_modelo import LoginForm
-from flask_sqlalchemy import SQLAlchemy
-from database import db
-from passlib.hash import pbkdf2_sha256
+from modelos.usuarios_listas_modelo import Usuario_Lista
+from funcoes_auxiliares import verificar_forca_senha
 
 def cadastrar():
   if current_user.is_authenticated:
@@ -24,46 +21,17 @@ def cadastrar():
         flash('Senhas incompativeis')
         return redirect(url_for('usuarios_bp.cadastrar'))
 
-      buscar_usuario = Usuario.query.filter_by(email=email).first()  
-
-      if buscar_usuario:  
+      if Usuario.busca_usuario(email) :  
           flash('Email já existe')
           return redirect(url_for('usuarios_bp.cadastrar'))
-  
-      usuario = Usuario(nome, email, senha)
-      db.session.add(usuario)
-      db.session.commit()
-      login_user(usuario)
-      return redirect(url_for('indice'))
 
-
+      if Usuario.cadastrar_usuario(nome, email, senha):
+        return redirect(url_for('indice'))
 
 def checar_senha():
   senha_entrada = request.args.get('senhaUsuario', '')
   resultado = verificar_forca_senha(senha_entrada)
   return jsonify({"resultado": resultado})
-
-
-def verificar_forca_senha(senha):
-  tamanho_minimo = 8
-  maiusculo_regex = re.compile(r'[A-Z]')
-  minusculo_regex = re.compile(r'[a-z]')
-  digito_regex = re.compile(r'\d')
-  caracter_especial_regex = re.compile(r'[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]')
-  
-  if len(senha) < tamanho_minimo:
-      return "Senha Fraca: Senha deve conter no minimo {} caracteres".format(tamanho_minimo)
-  
-  if not maiusculo_regex.search(senha) or not minusculo_regex.search(senha):
-      return "Senha Fraca: Senha deve conter no minimo uma letra maiuscula e uma minuscula"
-  
-  if not digito_regex.search(senha):
-      return "Senha fraca: Senha deve conter no mínimo um digito"
-  
-  if not caracter_especial_regex.search(senha):
-      return "Senha fraca: Senha deve conter pelo menos um caractere especial"
-  
-  return ""
 
 def login():
   if current_user.is_authenticated:
@@ -71,17 +39,29 @@ def login():
   else:
     form = LoginForm()
     if form.validate_on_submit():
-      usuario = Usuario.query.filter_by(email=form.email.data).first()
-      if usuario and pbkdf2_sha256.verify(form.senha.data, usuario.senha):
-        login_user(usuario)
+      usuario = Usuario.login_usuario(form)
+      if usuario != '0':
         flash("Logado com sucesso")
         return redirect(url_for('indice'))
       else:
         flash("Usuário ou senha inválidos")
-    
     return render_template('login_usuario.html', form_login=form)
 
 def logout():
   logout_user()
   flash("Deslogado com sucesso")
   return redirect(url_for('indice'))
+
+
+def pagina_usuario():
+  if not current_user.is_authenticated:
+    return redirect(url_for('indice'))
+  else:
+    return render_template('pagina_usuario.html', usuario=current_user)
+
+def get_livros_lidos_usuario():
+  if not current_user.is_authenticated:
+    return redirect(url_for('indice'))
+  else:
+    lista_livros_lido = Usuario_Lista.get_lista_livros_lidos(current_user.id)
+    return render_template('pagina_usuario.html', listaLivros = lista_livros_lido)

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+
+<!--Main Navigation-->
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <div class="d-flex flex-column align-items-center text-center py-3"><img class="rounded-circle mt-1" width="150px" src="/static/images/user_profile.png"><span class="font-weight-bold">{{usuario.nome}}</span><span> </span></div>
+
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
+          <i class="fas fa-chart-area fa-fw me-3"></i><span>Livros Lidos</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-lock fa-fw me-3"></i><span>Lendo no momento</span></a
+        >
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-line fa-fw me-3"></i><span>Leituras Futuras</span></a
+        >
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+          <i class="fas fa-chart-pie fa-fw me-3"></i><span>Livros Abandonados</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Favoritos</span></a
+        >
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+</header>
+<!--Main Navigation-->
+
+<!--Main layout-->
+<main style="margin-top: 58px;">
+  <div class="container pt-4">
+   {% if listaLivros%}
+    {% for livro in listaLivros%}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">{{livro.lista_id}}</h4>
+            <h4 class="card-title">{{livro.livro_id}}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor%}
+    {% else %}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Não há livros na lista</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    
+  </div>
+</main>
+<!--Main layout-->
+
+
+{% endblock conteudo %}

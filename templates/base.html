@@ -127,10 +127,10 @@
             <ul class="navbar-nav">
                {% if current_user.is_authenticated  %}
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="" style="cursor:default;">{{current_user.nome}}</a>
+                  <a class="nav-link active" aria-current="page" href="{{url_for('usuarios_bp.pagina_usuario')}}" style="cursor:default;">{{current_user.nome}}</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="{{url_for('usuarios_bp.logout')}}" style="color:white;">Logout</a>
+                  <a class="nav-link active" aria-current="page" href="{{url_for('usuarios_bp.logout')}}">Logout</a>
                 </li>
                 {% else %}
                 <li class="nav-item">

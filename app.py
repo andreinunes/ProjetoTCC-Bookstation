@@ -4,9 +4,11 @@ from flask_migrate import Migrate
 from flask_login import LoginManager,current_user
 from database import db
 from rotas.usuarios_bp import usuarios_bp
-from rotas.livros_bp import livros_bp
+from rotas.busca_livros_bp import busca_livros_bp
 from modelos.usuarios_modelo import Usuario
 from modelos.livros_generos_modelo import Livro_Genero
+from modelos.usuarios_listas_modelo import Usuario_Lista
+from modelos.listas_livros_modelo import Lista_Livro
 import requests
 import random
 
@@ -21,7 +23,7 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   lm = LoginManager()
   lm.init_app(app)
   app.register_blueprint(usuarios_bp, url_prefix='/usuarios')
-  app.register_blueprint(livros_bp, url_prefix='/livros')
+  app.register_blueprint(busca_livros_bp, url_prefix='/livros')
   
   
   @lm.user_loader
@@ -48,7 +50,7 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   @app.before_request
   def before_request():
       session.permanent = True
-      app.permanent_session_lifetime = timedelta(minutes=1)
+      app.permanent_session_lifetime = timedelta(minutes=5)
       session.modified = True
       g.user = current_user
   

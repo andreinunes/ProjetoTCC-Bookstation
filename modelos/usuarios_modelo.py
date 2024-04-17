@@ -1,5 +1,7 @@
 from database import db
+from flask_login import login_user
 from passlib.hash import pbkdf2_sha256
+from modelos.usuarios_listas_modelo import Usuario_Lista
 
 class Usuario(db.Model):
   __tablename__ = 'usuario'
@@ -7,6 +9,7 @@ class Usuario(db.Model):
   nome = db.Column(db.String(100),nullable = False)
   email = db.Column(db.String(100),nullable = False)
   senha = db.Column(db.String(100),nullable = False)
+  listas = db.relationship('Usuario_Lista', backref='usuario', lazy=True)
 
   @property
   def is_authenticated(self):
@@ -30,3 +33,26 @@ class Usuario(db.Model):
 
   def __repr__(self):
     return "Usuário: {}".format(self.nome)
+
+  @staticmethod
+  def busca_usuario(email):
+    buscar_usuario = Usuario.query.filter_by(email=email).first()  
+    return buscar_usuario
+  
+  @staticmethod
+  def cadastrar_usuario(nome, email, senha):
+    usuario = Usuario(nome, email, senha)
+    db.session.add(usuario)
+    db.session.commit()
+    login_user(usuario)
+    Usuario_Lista.criar_listas_novos_usuarios(usuario.id)
+    return usuario
+
+  @staticmethod
+  def login_usuario(form):
+    usuario = Usuario.query.filter_by(email=form.email.data).first()
+    if usuario and pbkdf2_sha256.verify(form.senha.data, usuario.senha):
+      login_user(usuario)
+      return usuario
+    else:
+      return '0'
