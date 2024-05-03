@@ -16,7 +16,7 @@
   {% for livro in livros %}
     <div class="row" style = "margin-left: auto; margin-right:auto; margin-bottom:10px; max-width:60%;border-radius:30px; padding:3px; background: linear-gradient(#4337d440, rgba(0, 0, 0, 0));">
       <div class="col-md-3">
-        <img onclick = "submit('{{livro.titulo}}','{{livro.subtitulo}}','{{livro.listaautores}}','{{livro.linkCapa}}','{{livro.descricao}}','{{livro.listacategoria}}','{{livro.dataPublicacao}}','{{livro.ISBN10}}','{{livro.ISBN13}}', '{{livro.editora}}','{{livro.numeroPaginas}}','{{livro.id}}');"
+        <img onclick = "submit('{{livro.id}}');"
         {% if livro.linkCapa%}
           src="{{livro.linkCapa}}"
         {% else %}
@@ -90,18 +90,7 @@
 
 
 <form action="" method="GET" id="formPagina" style = "display:none;">
-    <input type="text" id="tituloLivro" name="tituloLivro">
-    <input type="text"  id="subtituloLivro" name="subtituloLivro">
-    <input type="text" id="autorLivro" name="autorLivro">
-    <input type="text"  id="generoLivro" name="generoLivro">
-    <input type="text"  id="linkCapa" name="linkCapa">
-    <input type="text" id="descricaoLivro" name="descricaoLivro">
-    <input type="text"  id="editoraLivro" name="editoraLivro">
     <input type="text" id="idDoLivro" name="idDoLivro">
-    <input type="text"  id="dataPublicacaoLivro" name="dataPublicacaoLivro">
-    <input type="text"  id="ISBN10" name="ISBN10">
-    <input type="text" id="ISBN13" name="ISBN13">
-    <input type="text"  id="numeroPaginasLivro" name="numeroPaginasLivro">
   <input type="text"  id="urlAtual" name="urlAtual">
 </form>
 {% endblock conteudo %}

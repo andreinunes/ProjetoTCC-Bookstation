@@ -46,11 +46,11 @@ def buscar_por_genero(genero):
 
 def buscar_livro_id(id = None):
 
-  if request.args.get('tituloLivro') is None:
+  if request.args.get('idDoLivro') is None:
     retornoBuscaLivro= Busca_Livro.buscar_livro_id(id)
-    return render_template("pagina_livro.html", livro=retornoBuscaLivro)
+    return render_template("pagina_livro.html", livro=retornoBuscaLivro[0],existe = retornoBuscaLivro[1], emqueLista = retornoBuscaLivro[2],existeEmFavoritos = retornoBuscaLivro[3])
   else:
     retornoBuscaLivro = Busca_Livro.buscar_livro_id()
     livro = retornoBuscaLivro[0]
     urlBusca = retornoBuscaLivro[1]
-    return render_template("pagina_livro.html",livro=livro,urlBusca=urlBusca)
+    return render_template("pagina_livro.html",livro=livro,urlBusca=urlBusca,existe = retornoBuscaLivro[2], emqueLista = retornoBuscaLivro[3], existeEmFavoritos = retornoBuscaLivro[4])

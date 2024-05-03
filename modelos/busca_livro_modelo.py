@@ -1,5 +1,7 @@
 from flask import request
 from modelos.livros_generos_modelo import Livro_Genero
+from modelos.usuarios_listas_modelo import Usuario_Lista
+from flask_login import current_user
 from funcoes_auxiliares import remove_html_tags, formatar_palavra_busca, verificar_prioridade, realizar_request_api,verificar_ISBNs,converter_data
 
 API_KEY = 'AIzaSyBJSFy6VtqvSEJeHk9h8tCgWpgJSht00ac'
@@ -67,35 +69,33 @@ class Busca_Livro():
   @staticmethod
   def buscar_livro_id(id = None):
   
-    if request.args.get('tituloLivro') is None:
+    livroExisteLista = 0
+    emQueLista = ''
+    verificarexiste = []
+    existeEmFavoritos = 0
+    if request.args.get('idDoLivro') is None:
       url = "https://www.googleapis.com/books/v1/volumes/" + str(id) + '?key=' + API_KEY
       jsondata = realizar_request_api(url)
       livro = Busca_Livro.gerar_dictionary_livro(jsondata)
-      return livro
+      if current_user.is_authenticated:
+        verificarexiste = Usuario_Lista.verificar_livro_lista(current_user.id,'',str(id))
+        if verificarexiste is not None:
+          livroExisteLista = verificarexiste[0]
+          existeEmFavoritos = verificarexiste[1]
+          emQueLista = verificarexiste[2]
+      return [livro,livroExisteLista,emQueLista,existeEmFavoritos]
     else:
-      autorLivro = request.args.get('autorLivro')
-      generoLivro = request.args.get('generoLivro')
-  
-      if autorLivro is None:
-        autorLivro = "#"
-      if generoLivro is None:
-        generoLivro = "#"
-  
-      livro = {
-        "titulo": request.args.get('tituloLivro'),
-        "subtitulo": request.args.get('subtituloLivro'),
-        "autores": autorLivro.split('#'),
-        "linkCapa": request.args.get('linkCapa'),
-        "descricao": request.args.get('descricaoLivro'),
-        "id": str(request.args.get('idDoLivro')),
-        "categorias": generoLivro.split('#'),
-        "dataPublicacao": converter_data(request.args.get('dataPublicacaoLivro')),
-        "ISBN10": request.args.get('ISBN10'),
-        "ISBN13": request.args.get('ISBN13'),
-        "editora": request.args.get('editoraLivro'),
-        "numeroPaginas": str(request.args.get('numeroPaginasLivro'))
-      }
-      return [livro,request.args.get('urlAtual')]
+      url = "https://www.googleapis.com/books/v1/volumes/" + str(request.args.get('idDoLivro')) + '?key=' + API_KEY
+      jsondata = realizar_request_api(url)
+      livro = Busca_Livro.gerar_dictionary_livro(jsondata)
+      if current_user.is_authenticated:
+        verificarexiste = Usuario_Lista.verificar_livro_lista(current_user.id,'',str(request.args.get('idDoLivro')))
+        if verificarexiste is not None:
+          livroExisteLista = verificarexiste[0]
+          emQueLista = verificarexiste[2]
+          existeEmFavoritos = verificarexiste[1]
+      
+      return [livro,request.args.get('urlAtual'),livroExisteLista,emQueLista,existeEmFavoritos]
   
   @staticmethod
   def gerar_dictionary_livro(livro):

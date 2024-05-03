@@ -59,9 +59,9 @@ def pagina_usuario():
   else:
     return render_template('pagina_usuario.html', usuario=current_user)
 
-def get_livros_lidos_usuario():
+def buscar_lista_usuario(tipoLista):
   if not current_user.is_authenticated:
     return redirect(url_for('indice'))
   else:
-    lista_livros_lido = Usuario_Lista.get_lista_livros_lidos(current_user.id)
-    return render_template('pagina_usuario.html', listaLivros = lista_livros_lido)
+    lista_livros = Usuario_Lista.get_lista_livros(current_user.id,tipoLista)
+    return render_template('pagina_usuario.html', usuario=current_user ,listaLivros = lista_livros, quantidadeRetorno = len(lista_livros))

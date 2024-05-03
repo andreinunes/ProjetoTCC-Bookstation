@@ -10,20 +10,20 @@
       <div class="list-group list-group-flush mx-3 mt-4">
         <div class="d-flex flex-column align-items-center text-center py-3"><img class="rounded-circle mt-1" width="150px" src="/static/images/user_profile.png"><span class="font-weight-bold">{{usuario.nome}}</span><span> </span></div>
 
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
+        <a href="/usuarios/paginausuario/LL" class="list-group-item list-group-item-action py-2 ripple">
           <i class="fas fa-chart-area fa-fw me-3"></i><span>Livros Lidos</span>
         </a>
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+        <a href="/usuarios/paginausuario/LM" class="list-group-item list-group-item-action py-2 ripple"
           ><i class="fas fa-lock fa-fw me-3"></i><span>Lendo no momento</span></a
         >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
+        <a href="/usuarios/paginausuario/LF" class="list-group-item list-group-item-action py-2 ripple"
           ><i class="fas fa-chart-line fa-fw me-3"></i><span>Leituras Futuras</span></a
         >
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+        <a href="/usuarios/paginausuario/LA" class="list-group-item list-group-item-action py-2 ripple">
           <i class="fas fa-chart-pie fa-fw me-3"></i><span>Livros Abandonados</span>
         </a>
-        <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Favoritos</span></a
+        <a href="/usuarios/paginausuario/FAV" class="list-group-item list-group-item-action py-2 ripple"
+          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Favoritos &#9734;</span></a
         >
       </div>
     </div>
@@ -35,20 +35,28 @@
 
 <!--Main layout-->
 <main style="margin-top: 58px;">
-  <div class="container pt-4">
-   {% if listaLivros%}
-    {% for livro in listaLivros%}
+  <div id = "Conteudo" class="container pt-4">
+   {% if quantidadeRetorno != 0  %}
     <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">{{livro.lista_id}}</h4>
-            <h4 class="card-title">{{livro.livro_id}}</h4>
+    {% for livro in listaLivros %}
+    
+      <div class = "col-md-3">
+        <div class="card" style="width: 11rem;">
+          <img onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';"
+          {% if livro.linkCapa%}
+            src="{{livro.linkCapa}}"
+          {% else %}
+          src="/static/images/imagem_indisponivel.png"
+          {% endif %}>
+          <div class="card-body" style = "height: 120px; overflow: hidden; ">
+            <h5 class="card-title">{{livro.titulo}}</h5>
+            <p class="card-text">{{livro.subtitulo}}.</p>
           </div>
         </div>
       </div>
-    </div>
+    
     {% endfor%}
+      </div>
     {% else %}
     <div class="row">
       <div class="col-md-12">
@@ -65,6 +73,4 @@
   </div>
 </main>
 <!--Main layout-->
-
-
 {% endblock conteudo %}

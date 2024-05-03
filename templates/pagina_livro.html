@@ -2,6 +2,17 @@
 {% block conteudo %}
 
 <div id = "Conteúdo" class = "container" style="padding-top:40px">
+   {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="alert alert-warning" role="alert">
+      <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endwith %}
   <div class="row">
     <div class="col-12" style = "position:absolute; top:6%; left:10%;">
       {% if urlBusca %}
@@ -16,6 +27,147 @@
       {% else %}
       <img src="/static/images/imagem_indisponivel.png" style = "border-radius:15px;">
       {% endif %}
+
+      {% if current_user.is_authenticated and existe == 0 %}
+
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style = "margin-top:20px;">
+        Adicionar em sua lista 	&oplus;
+      </button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Adicione em uma de suas listas</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="card" id = "LivrosLidos" style = "background-color:#7CFC00;" onclick = "submitAdicionarLivro('{{livro.id}}','LL')">
+                <div class="card-header">
+                  <h6 class="card-title" style = "font-size:=1rem;">Livros lidos</h6>
+                </div>
+              </div>
+
+              <div class="card" id = "LendoMomento" style = "background-color:#0096C7;"onclick = "submitAdicionarLivro('{{livro.id}}','LM')">
+                <div class="card-header">
+                  <h6 class="card-title" style = "font-size:=1rem;">Lendo no momento</h6>
+                </div>
+              </div>
+
+              <div class="card" id = "LeiturasFuturas" style = "background-color:white;" onclick = "submitAdicionarLivro('{{livro.id}}','LF')">
+                <div class="card-header">
+                  <h6 class="card-title" style = "font-size:=1rem;">Leituras Futuras</h6>
+                </div>
+              </div>
+
+              <div class="card" id = "LivrosAbandonados" style = "background-color:#FA5F55;" onclick = "submitAdicionarLivro('{{livro.id}}','LA')">
+                <div class="card-header">
+                  <h6 class="card-title" style = "font-size:=1rem;">Livros Abandonados</h6>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      {% endif %}
+      
+      {% if current_user.is_authenticated and existe == 1 %}
+
+      <div class="btn-group" role="group" aria-label="Basic mixed styles example" style = "margin-top:20px;">
+        <button type="button" class="btn btn-primary" style = "opacity:1; !important" disabled>Livro já na lista {{emqueLista}}</button>
+        <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#removerModal" id = "BotaoRemover" >&#10006; <span class="tooltiptext">Remover da Lista</span> </button>
+      </div>
+
+      <div class="modal fade" id="removerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">REMOVER DA SUA LISTA</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Deseja remover {{livro.titulo}} {{livro.subtitulo}} da sua lista?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+              <button type="button" class="btn btn-danger" onclick = "submitRemoverLivro('{{livro.id}}')">Remover</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    
+      {% if existeEmFavoritos == 0 %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#favoriteModal" style = "margin-top:20px; background-color:#D4AF37 !important; font-size:1rem;">
+          Adicionar aos favoritos &oplus;
+        </button>
+  
+        <div class="modal fade" id="favoriteModal" tabindex="-1" aria-labelledby="favoriteModal" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">ADICIONAR AOS FAVORITOS</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Deseja adicionar {{livro.titulo}} {{livro.subtitulo}} aos favoritos?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick = "submitAdicionarLivro('{{livro.id}}','FAV')" style = "background-color:#D4AF37 !important;">Confirmar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% endif  %}
+
+
+      {% if existeEmFavoritos == 1 %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#removefavoriteModal" style = "margin-top:20px; background-color:#D5B56E !important; font-size:1rem;">
+          Remover dos favoritos &#10060;
+        </button>
+
+        <div class="modal fade" id="removefavoriteModal" tabindex="-1" aria-labelledby="removefavoriteModal" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">REMOVER DOS FAVORITOS</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Deseja remover {{livro.titulo}} {{livro.subtitulo}} dos favoritos?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-danger" onclick = "submitRemoverLivroFavorito('{{livro.id}}')">Remover</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% endif  %}
+
+      
+      {% endif  %}
+
+      <form action="" method="POST" id="formExcluir" style = "display:none;">
+          <input type="text" id="idLivroExcluir" name="idLivroExcluir">
+      </form>
+      <form action="" method="POST" id="formExcluirFavoritos" style = "display:none;">
+        <input type="text" id="idLivroExcluirFavorito" name="idLivroExcluirFavorito">
+      </form>
+      <form action="" method="POST" id="formPagina" style = "display:none;">
+          <input type="text" id="idLivro" name="idLivro">
+          <input type="text"  id="tipoLista" name="tipoLista">
+      </form>
+         
     </div>
     <div class="col-md-10 style = "padding-left:50px">
       <div class = "container">
@@ -26,7 +178,8 @@
               <div onclick="loading();"><a class = "autorLivro" href="/livros/buscarLivrosAutor/{{livro.autores[0]}}/0"><h5>{{livro.autores[0]}}</h5></a></div>
           {% endif %}
         </div>
-        <div class="row" style = "padding:10px;">
+        <div class="row" style = "padding:10px;  text-align: justify;
+          text-justify: inter-word;">
          <span>{% if livro.descricao%}
             {{livro.descricao}}
         {% endif%}</span>
@@ -89,6 +242,29 @@
     window.location.replace(url + "/livros/buscarLivrosGenero/" + categoria);
     loading();
   }
+
+  function submitAdicionarLivro(idLivro,tipoLista){
+    document.getElementById("idLivro").value = idLivro;
+    document.getElementById("tipoLista").value = tipoLista;
+    document.getElementById("formPagina").action = "/crud_livros/adicionarLivroEmLista/" + idLivro + "/" + tipoLista;
+    document.getElementById("formPagina").submit();
+    loading();
+  }
+
+  function submitRemoverLivro(idLivroExcluir){
+    document.getElementById("idLivroExcluir").value = idLivroExcluir;
+    document.getElementById("formExcluir").action = "/crud_livros/removerLivroDaLista/" + idLivroExcluir; 
+    document.getElementById("formExcluir").submit();
+    loading();
+  }
+
+  function submitRemoverLivroFavorito(idLivroExcluirFavorito){
+    document.getElementById("idLivroExcluirFavorito").value = idLivroExcluirFavorito;
+    document.getElementById("formExcluirFavoritos").action = "/crud_livros/removerLivroFavoritos/" + idLivroExcluirFavorito;
+    document.getElementById("formExcluirFavoritos").submit();
+    loading();
+  }
+  
 </script>
 
 {% endblock conteudo %}

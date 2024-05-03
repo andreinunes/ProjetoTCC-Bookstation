@@ -1,6 +1,9 @@
 from modelos.listas_livros_modelo import Lista_Livro
-from flask_sqlalchemy import SQLAlchemy
+from modelos.livros_generos_modelo import Livro_Genero
 from database import db
+from funcoes_auxiliares import realizar_request_api, remove_html_tags, verificar_ISBNs, converter_data
+
+API_KEY = 'AIzaSyBJSFy6VtqvSEJeHk9h8tCgWpgJSht00ac'
 
 
 class Usuario_Lista(db.Model):
@@ -45,7 +48,178 @@ class Usuario_Lista(db.Model):
     db.session.commit()
 
   @staticmethod
-  def get_lista_livros_lidos(usuario_id):
-    lista_livros_lido = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista="LL").first()
-    livros_lista_lido = Lista_Livro.query.filter_by(lista_id=lista_livros_lido.lista_id).all
-    return livros_lista_lido
+  def get_lista_livros(usuario_id,tipoLista):
+    lista_livros = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista=tipoLista).first()
+    if lista_livros is None:
+      return None
+    else:
+      lista_livros = Lista_Livro.query.filter_by(lista_id = lista_livros.lista_id).all()
+      livros = []
+      jsondata = ""
+      for item in lista_livros:
+        url = 'https://www.googleapis.com/books/v1/volumes/' + item.livro_id + '?key=' + API_KEY
+        jsondata = realizar_request_api(url)
+        dict_livro = Usuario_Lista.gerar_dicionario(jsondata)
+        livros.append(dict_livro)
+      return livros
+
+  @staticmethod
+  def verificar_livro_lista(usuario_id,tipoLista,idLivro):
+    livros_lidos = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista="LL").first()
+    lendo_momento = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista= "LM").first()
+    leituras_futuras = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista= "LF").first()
+    livros_abandonados = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista= "LA").first()
+    livros_favoritos = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista= "FAV").first()
+
+    existeEmLista = 0
+    emQualListaExiste = ''
+    existeEmFavoritos = 0
+    if Lista_Livro.query.filter_by(lista_id=livros_lidos.lista_id,livro_id = idLivro).count() != 0:
+      existeEmLista = 1
+      emQualListaExiste = 'Livros Lidos'
+      
+    if Lista_Livro.query.filter_by(lista_id=lendo_momento.lista_id,livro_id = idLivro).count() != 0:
+      existeEmLista = 1
+      emQualListaExiste = 'Lendo no Momento'
+    
+    if Lista_Livro.query.filter_by(lista_id=leituras_futuras.lista_id,livro_id = idLivro).count() != 0:
+      existeEmLista = 1
+      emQualListaExiste = 'Leituras Futuras'
+      
+    if Lista_Livro.query.filter_by(lista_id=livros_abandonados.lista_id,livro_id = idLivro).count() != 0:
+      existeEmLista = 1
+      emQualListaExiste = 'Livros Abandonados'
+    
+    if Lista_Livro.query.filter_by(lista_id=livros_favoritos.lista_id,livro_id = idLivro).count() != 0:
+      existeEmFavoritos = 1
+
+    return [existeEmLista,existeEmFavoritos,emQualListaExiste]
+    
+    
+
+  @staticmethod
+  def adicionar_livro_lista(usuario_id,tipoLista,idLivro):
+    lista_livros = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista=tipoLista).first()
+    if lista_livros is None:
+      return 1
+    else:
+      verificarexiste = Usuario_Lista.verificar_livro_lista(usuario_id,tipoLista,idLivro)
+      if verificarexiste[0] == 0 and tipoLista!='FAV':
+        livro = Lista_Livro(lista_livros.lista_id, idLivro)
+        db.session.add(livro)
+        db.session.commit()
+        return 0
+      elif verificarexiste[0] == 0 and tipoLista =='FAV':
+        return 1
+      elif verificarexiste[0] == 1 and tipoLista!='FAV':
+        return 1
+      elif verificarexiste[0] == 1 and tipoLista =='FAV' and verificarexiste[1] == 0:
+        livro = Lista_Livro(lista_livros.lista_id, idLivro)
+        db.session.add(livro)
+        db.session.commit()
+        return 0
+      else:
+        return 1
+
+
+  @staticmethod
+  def remover_livro_lista(usuario_id,idLivro):
+      verificarexiste = Usuario_Lista.verificar_livro_lista(usuario_id,'',idLivro)
+      lista_com_o_livro = verificarexiste[2]
+      if verificarexiste[0] == 1 and lista_com_o_livro != '':
+        siglaLista = ''
+        if lista_com_o_livro == 'Livros Lidos':
+          siglaLista = "LL"
+        elif lista_com_o_livro == 'Lendo no Momento':
+          siglaLista = "LM"
+        elif lista_com_o_livro == 'Leituras Futuras':
+          siglaLista = "LF"
+        elif lista_com_o_livro == 'Livros Abandonados':
+          siglaLista = "LA"
+
+        lista_livro = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista=siglaLista).first()
+        idDaLista = lista_livro.lista_id
+
+        Lista_Livro.query.filter_by(lista_id=idDaLista, livro_id=idLivro).delete()
+        db.session.commit()
+        if verificarexiste[1] == 1:
+          Usuario_Lista.remover_livro_lista_favorito(usuario_id,idLivro)
+          return 0
+        else:
+          return 0
+      else:
+        return 1
+
+
+  @staticmethod
+  def remover_livro_lista_favorito(usuario_id,idLivro):
+    lista_livro = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista="FAV").first()
+    idDaLista = lista_livro.lista_id
+    Lista_Livro.query.filter_by(lista_id=idDaLista, livro_id=idLivro).delete()
+    db.session.commit()
+    return 0
+
+
+  @staticmethod
+  def gerar_dicionario(livro):
+    tituloDoLivro = ""
+    autoresDoLivro = []
+    subtituloDoLivro = ""
+    linkCapaDoLivro = ""
+    descricaoLivro = ""
+    idDoLivro = ""
+    dataPublicacaoLivro = ""
+    ISBN = []
+    editoraLivro = ""
+    numeroPaginasLivro = ""
+    categoriasDoLivro = []
+
+    if 'title' in livro['volumeInfo']:
+      tituloDoLivro = livro['volumeInfo']['title']
+    if 'subtitle' in livro['volumeInfo']:
+      subtituloDoLivro = livro['volumeInfo']['subtitle']
+    if 'imageLinks' in livro['volumeInfo']:
+      linkCapaDoLivro = livro['volumeInfo']['imageLinks']['thumbnail']
+    if 'authors' in livro['volumeInfo']:
+      maximoAutores = 0
+      for autores in livro['volumeInfo']['authors']:
+        autoresDoLivro.append(autores)
+        maximoAutores += 1
+        if maximoAutores == 3:
+          break
+    if 'description' in livro['volumeInfo']:
+      descricaoLivro = remove_html_tags(livro['volumeInfo']['description'])
+    if 'id' in livro: idDoLivro = livro['id']
+    if 'categories' in livro['volumeInfo']:
+      for categoria in livro['volumeInfo']['categories']:
+        categoriasDoLivro.append(categoria)
+    if 'publishedDate' in livro['volumeInfo']:
+      dataPublicacaoLivro = livro['volumeInfo']['publishedDate']
+    if 'publisher' in livro['volumeInfo']:
+      editoraLivro = livro['volumeInfo']['publisher']
+    if 'industryIdentifiers' in livro['volumeInfo']:
+      for ISBNs in livro['volumeInfo']['industryIdentifiers']:
+        ISBN.append({ 'ISBN': ISBNs['type'], 'Identificador': ISBNs['identifier']})
+    if 'pageCount' in livro['volumeInfo']:
+      numeroPaginasLivro = livro['volumeInfo']['pageCount']
+
+    generosDoLivro = Livro_Genero.buscar_genero_webscrapper(idDoLivro, categoriasDoLivro)
+    ISBN = verificar_ISBNs(ISBN)
+
+    dict_livro = {
+        "titulo": tituloDoLivro,
+        "subtitulo": subtituloDoLivro,
+        "autores": autoresDoLivro,
+        "linkCapa": linkCapaDoLivro,
+        "descricao": descricaoLivro,
+        "id": str(idDoLivro),
+        "categorias": generosDoLivro,
+        "listacategoria": '#'.join(generosDoLivro),
+        "listaautores": '#'.join(autoresDoLivro),
+        "dataPublicacao": converter_data(dataPublicacaoLivro),
+        "ISBN10": ISBN['ISBN10'],
+        "ISBN13": ISBN['ISBN13'],
+        "editora": editoraLivro,
+        "numeroPaginas": str(numeroPaginasLivro),
+    }
+    return dict_livro
