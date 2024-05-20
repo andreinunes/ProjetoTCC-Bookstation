@@ -79,7 +79,7 @@
       
       {% if current_user.is_authenticated and existe == 1 %}
 
-      <div class="btn-group" role="group" aria-label="Basic mixed styles example" style = "margin-top:20px;">
+      <div class="btn-group" role="group" style = "margin-top:20px;">
         <button type="button" class="btn btn-primary" style = "opacity:1; !important" disabled>Livro já na lista {{emqueLista}}</button>
         <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#removerModal" id = "BotaoRemover" >&#10006; <span class="tooltiptext">Remover da Lista</span> </button>
       </div>
@@ -130,9 +130,13 @@
 
 
       {% if existeEmFavoritos == 1 %}
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#removefavoriteModal" style = "margin-top:20px; background-color:#D5B56E !important; font-size:1rem;">
-          Remover dos favoritos &#10060;
-        </button>
+      
+      <div class="btn-group" role="group" style = "margin-top:20px;">
+        <button type="button" class="btn btn-primary" style = "opacity:1; !important; background-color:#D5B56E !important;" disabled>Livro nos favoritos</button>
+        <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#removefavoriteModal" id = "BotaoRemoverFavorito" >&#10006; <span class="tooltiptext">Remover dos favoritos</span> </button>
+      </div>
+
+      
 
         <div class="modal fade" id="removefavoriteModal" tabindex="-1" aria-labelledby="removefavoriteModal" aria-hidden="true">
           <div class="modal-dialog">

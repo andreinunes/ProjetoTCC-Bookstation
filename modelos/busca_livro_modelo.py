@@ -51,10 +51,10 @@ class Busca_Livro():
     return [livros,url,possuiProximo]
   
   @staticmethod
-  def buscar_por_genero(genero):
+  def buscar_por_genero(genero,per_page):
   
     page = request.args.get('page',1,type = int)
-    per_page = 15
+    per_page = per_page
     colecao_genero = Livro_Genero.getColecaoGeneros(genero,page,per_page)
     livros = []
     jsondata = ""

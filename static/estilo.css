@@ -105,14 +105,13 @@ display: none;
 }
 
 .sidebar {
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   padding: 58px 0 0;
   box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
   width: 240px;
-  z-index: 600;
 }
 
 @media (max-width: 991.98px) {
@@ -148,13 +147,13 @@ display: none;
     background-color: #5D3FD3 !important;
 }
 
-#BotaoRemover {
+#BotaoRemover, #BotaoRemoverFavorito  {
   position: relative;
   display: inline-block;
   border-bottom: 1px dotted black;
 }
 
-#BotaoRemover .tooltiptext {
+#BotaoRemover .tooltiptext, #BotaoRemoverFavorito .tooltiptext {
   visibility: hidden;
   width: 120px;
   background-color: black;
@@ -171,8 +170,65 @@ display: none;
   margin-left: -60px;
 }
 
-#BotaoRemover:hover .tooltiptext {
+#BotaoRemover:hover .tooltiptext, #BotaoRemoverFavorito:hover .tooltiptext  {
   visibility: visible;
+}
+
+
+.capasLivrosListas {
+  position: relative;
+  display: inline-block;
+}
+
+.capasLivrosListas .tooltiptext {
+  visibility: hidden;
+  width: 250px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -90px;
+}
+
+.capasLivrosListas:hover .tooltiptext {
+  visibility: visible;
+}
+
+.quadradoPaginaUsuario{
+  border-style: double;
+  border-color: #19e5e6;
+  border-width: 5px;
+  width: 50%;
+  height: 100px;
+  text-align:center;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 30px;
+  background: -webkit-linear-gradient(#b3cde0, #011f4b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border-radius: 25px;
+}
+
+.quadradoPaginaUsuarioFavoritos{
+  border-style: double;
+  border-color: #ffd700;
+  border-width: 5px;
+  width: 50%;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 30px;
+  background: #ffd700;
+  border-radius: 25px;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
 }
 
 

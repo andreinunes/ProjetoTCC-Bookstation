@@ -37,7 +37,7 @@ def buscar_por_autor(nomeAutor, indiceInicial):
 
 def buscar_por_genero(genero):
 
-  retornoBuscaGenero = Busca_Livro.buscar_por_genero(genero)
+  retornoBuscaGenero = Busca_Livro.buscar_por_genero(genero,15)
   colecao_genero = retornoBuscaGenero[0]
   livros = retornoBuscaGenero[1]
         

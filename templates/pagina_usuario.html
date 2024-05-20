@@ -1,76 +1,101 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 
-
 <!--Main Navigation-->
-<header>
   <!-- Sidebar -->
-  <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-    <div class="position-sticky">
-      <div class="list-group list-group-flush mx-3 mt-4">
-        <div class="d-flex flex-column align-items-center text-center py-3"><img class="rounded-circle mt-1" width="150px" src="/static/images/user_profile.png"><span class="font-weight-bold">{{usuario.nome}}</span><span> </span></div>
-
-        <a href="/usuarios/paginausuario/LL" class="list-group-item list-group-item-action py-2 ripple">
-          <i class="fas fa-chart-area fa-fw me-3"></i><span>Livros Lidos</span>
-        </a>
-        <a href="/usuarios/paginausuario/LM" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-lock fa-fw me-3"></i><span>Lendo no momento</span></a
-        >
-        <a href="/usuarios/paginausuario/LF" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-chart-line fa-fw me-3"></i><span>Leituras Futuras</span></a
-        >
-        <a href="/usuarios/paginausuario/LA" class="list-group-item list-group-item-action py-2 ripple">
-          <i class="fas fa-chart-pie fa-fw me-3"></i><span>Livros Abandonados</span>
-        </a>
-        <a href="/usuarios/paginausuario/FAV" class="list-group-item list-group-item-action py-2 ripple"
-          ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Favoritos &#9734;</span></a
-        >
-      </div>
-    </div>
-  </nav>
-  <!-- Sidebar -->
-
-</header>
-<!--Main Navigation-->
-
-<!--Main layout-->
-<main style="margin-top: 58px;">
-  <div id = "Conteudo" class="container pt-4">
-   {% if quantidadeRetorno != 0  %}
-    <div class="row">
-    {% for livro in listaLivros %}
+<div class = "container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+        <div class="position-sticky">
+          <div class="list-group list-group-flush mx-3 mt-4">
+            <div class="d-flex flex-column align-items-center text-center py-3"><img class="rounded-circle mt-1" width="150px" src="/static/images/user_profile.png"><span class="font-weight-bold">{{usuario.nome}}</span><span> </span></div>
     
-      <div class = "col-md-3">
-        <div class="card" style="width: 11rem;">
-          <img onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';"
-          {% if livro.linkCapa%}
-            src="{{livro.linkCapa}}"
-          {% else %}
-          src="/static/images/imagem_indisponivel.png"
-          {% endif %}>
-          <div class="card-body" style = "height: 120px; overflow: hidden; ">
-            <h5 class="card-title">{{livro.titulo}}</h5>
-            <p class="card-text">{{livro.subtitulo}}.</p>
+            <a href="/usuarios/paginausuario/LL" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'LIVROS LIDOS'  %} active {% endif %}">
+             <span>Livros Lidos</span>
+            </a>
+            <a href="/usuarios/paginausuario/LM" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'LENDO NO MOMENTO'  %} active {% endif %}">
+              <span>Lendo no momento</span>
+            </a>
+            <a href="/usuarios/paginausuario/LF" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'LEITURAS FUTURAS'  %} active {% endif %}">
+              <span>Leituras Futuras</span>
+            </a>
+            <a href="/usuarios/paginausuario/LA" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'LIVROS ABANDONADOS'  %} active {% endif %}">
+              <span>Livros Abandonados</span>
+            </a>
+            <a href="/usuarios/paginausuario/FAV" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'FAVORITOS'  %} active {% endif %}">
+              <span>Favoritos &#10031;</span>
+            </a>
+            <a href="/usuarios/paginausuario/REC" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'RECOMENDAÇÃO'  %} active {% endif %}">
+              <span>Recomendação &#10069;</span>
+            </a>
+          </div>
+        </div>
+      </nav>  
+    </div>
+  <!-- Sidebar -->
+  <!--Main layout-->
+    <div class="col-md-10" id = "Conteudo" style="position: relative; margin-top:50px;">
+      
+     {% if quantidadeRetorno and quantidadeRetorno > 0  %}
+      <h1 style = "border-bottom: solid 1px;"> {{descricaoLista}}</h1> {% if descricaoLista == "RECOMENDAÇÃO"  %} (Baseado nas listas de livros lidos e lendo no momento)  {% endif %}
+      
+      <div style="position: absolute; width:120%;">
+      <div class="row">
+      {% for livro in listaLivros %}
+        <div class = "col-md-2">
+          <div class = "capasLivrosListas">
+            <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';"
+            {% if livro.linkCapa%}
+              src="{{livro.linkCapa}}"
+            {% else %}
+            src="/static/images/imagem_indisponivel.png"
+            {% endif %}>
+            <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
+          </div>
+        </div>
+      
+      {% endfor%}
+        </div>
+      {% elif quantidadeRetorno == 0 %}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Não há livros na lista</h4>
+            </div>
           </div>
         </div>
       </div>
-    
-    {% endfor%}
-      </div>
-    {% else %}
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">Não há livros na lista</h4>
-          </div>
+  
+      {% else %}
+        <div class = "col-md-10">
+            <div class="row row-cols-2" style = "width:50%; text-align:center;">
+              <div class="quadradoPaginaUsuario">Lidos<br> {{quantidade_livros[0]}}</div>
+                <div class="quadradoPaginaUsuario">Lendo<br>{{quantidade_livros[1]}}</div>
+                <div class="quadradoPaginaUsuario">Futuros<br> {{quantidade_livros[2]}}</div>
+                <div class="quadradoPaginaUsuario">Abandonados<br>{{quantidade_livros[3]}}</div>
+            </div>
+            <div class="row row-cols-1" style = "width:50%; text-align:center; margin-top:10px;">
+              <div class="quadradoPaginaUsuarioFavoritos"> 
+                <div style = "display:inline-flex; margin-top:2px; margin-right:140px; border:5px dotted yellow; padding:18px; background:#d4af37;">
+                  {{quantidade_livros[4]}}
+                </div>  
+                <div style = "display:inline-flex; margin-top:2px; "> 
+                  FAVORITOS &#9733;
+                </div> 
+              </div>
+
+            </div>
+          
         </div>
+  
+      {% endif %}
+      
+      
       </div>
     </div>
-    {% endif %}
-    
-    
   </div>
-</main>
+</div>  
 <!--Main layout-->
 {% endblock conteudo %}

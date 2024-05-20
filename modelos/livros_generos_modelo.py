@@ -96,3 +96,9 @@ class Livro_Genero(db.Model):
   def getColecaoGeneros(genero, page, per_page):
     colecaoGeneros = Livro_Genero.query.filter_by(nome_genero=genero).paginate(page=page,per_page=per_page)
     return colecaoGeneros
+
+  @staticmethod
+  def getColecaoGenerosRecomendacao(genero, listaExclusao, quantidadeBusca):
+    colecaoGeneros = Livro_Genero.query.filter(Livro_Genero.nome_genero == genero, ~Livro_Genero.id_livro.in_(listaExclusao)).limit(quantidadeBusca).all()
+
+    return colecaoGeneros

@@ -57,11 +57,32 @@ def pagina_usuario():
   if not current_user.is_authenticated:
     return redirect(url_for('indice'))
   else:
-    return render_template('pagina_usuario.html', usuario=current_user)
+    quantidade_livros = Usuario_Lista.quantidade_livro_lista(current_user.id)
+    return render_template('pagina_usuario.html', usuario=current_user,quantidade_livros=quantidade_livros)
 
 def buscar_lista_usuario(tipoLista):
   if not current_user.is_authenticated:
     return redirect(url_for('indice'))
   else:
+    lista_livros = []
+    descricaoLista = ""
+    if tipoLista == 'LL':
+      descricaoLista = "LIVROS LIDOS"
+    elif tipoLista == 'LF':
+      descricaoLista = "LEITURAS FUTURAS"
+    elif tipoLista == 'LM':
+      descricaoLista = "LENDO NO MOMENTO"
+    elif tipoLista == 'LA':
+      descricaoLista = "LIVROS ABANDONADOS"
+    elif tipoLista == 'FAV':
+      descricaoLista = "FAVORITOS"
+    elif tipoLista == 'REC':
+      descricaoLista = "RECOMENDAÇÃO"
     lista_livros = Usuario_Lista.get_lista_livros(current_user.id,tipoLista)
-    return render_template('pagina_usuario.html', usuario=current_user ,listaLivros = lista_livros, quantidadeRetorno = len(lista_livros))
+    quantidadeRetorno = 0
+    if lista_livros is None:
+      quantidadeRetorno = 0
+    else:
+      quantidadeRetorno = len(lista_livros)
+      
+    return render_template('pagina_usuario.html', usuario=current_user ,listaLivros = lista_livros, quantidadeRetorno = quantidadeRetorno, descricaoLista = descricaoLista)

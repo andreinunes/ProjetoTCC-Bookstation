@@ -6,6 +6,7 @@ from rotas.usuarios_bp import usuarios_bp
 from rotas.busca_livros_bp import busca_livros_bp
 from rotas.crud_livros_bp import crud_livros_bp
 from modelos.usuarios_modelo import Usuario
+from modelos.busca_livro_modelo import Busca_Livro
 
 
 from datetime import timedelta
@@ -29,7 +30,13 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   
   @app.route('/')
   def indice():
-      return render_template('indice.html')
+    buscaLivrosFantasia = Busca_Livro.buscar_por_genero("Fantasia",4)
+    buscaLivrosBiografia = Busca_Livro.buscar_por_genero("Biografia",4)
+    buscaLivrosDrama = Busca_Livro.buscar_por_genero("Drama",4)
+    livrosFantasia = buscaLivrosFantasia[1]
+    livrosBiografia = buscaLivrosBiografia[1]
+    livrosDrama= buscaLivrosDrama[1]
+    return render_template('indice.html', livrosFantasia = livrosFantasia, livrosBiografia = livrosBiografia, livrosDrama = livrosDrama )
   
   @app.route("/imagem_indisponivel.png") 
   def imagem_indisponivel(): 
