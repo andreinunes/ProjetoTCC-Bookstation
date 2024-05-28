@@ -25,25 +25,29 @@ class Lista_Livro(db.Model):
     lista_livro.nota_livro = nota_livro
     db.session.commit()
     return 0
-    
 
   @staticmethod
-  def modificar_nota_livro(lista_id,livro_id,nota_livro):
-    if nota_livro >= 5:
-      nota_livro = 5
-    if nota_livro <= 0:
-      nota_livro = 0
-    lista_livro = Lista_Livro.query.filter_by(
-      lista_id=lista_id, livro_id = livro_id).first()
-    lista_livro.nota_livro = nota_livro
-    db.session.commit()
-    return 0
-
-  @staticmethod
-  def buscar_nota_livro(lista_id,livro_id):
+  def buscar_nota_livro(lista_id,usuario_id,livro_id):
     lista_livro = Lista_Livro.query.filter_by(
       lista_id=lista_id, livro_id = livro_id).first()
     if lista_livro.nota_livro is None:
       return -1
     else:
       return lista_livro.nota_livro
+
+  @staticmethod
+  def buscar_media_livro(livro_id):
+    lista_livro = Lista_Livro.query.filter_by(livro_id = livro_id).all()
+    media_livro = 0
+    quantidade_notas = 0
+    for item in lista_livro:
+      if item.nota_livro is not None:
+        media_livro = media_livro + item.nota_livro
+        quantidade_notas = quantidade_notas + 1
+
+    if quantidade_notas == 0:
+      media_livro = 0
+    else:
+      media_livro = media_livro / quantidade_notas
+    return media_livro
+    

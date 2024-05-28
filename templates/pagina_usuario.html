@@ -26,9 +26,13 @@
             <a href="/usuarios/paginausuario/FAV" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'FAVORITOS'  %} active {% endif %}">
               <span>Favoritos &#10031;</span>
             </a>
-            <a href="/usuarios/paginausuario/REC" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'RECOMENDAÇÃO'  %} active {% endif %}">
-              <span>Recomendação &#10069;</span>
+            <a href="/usuarios/paginausuario/REC" class="list-group-item list-group-item-action py-2 ripple {% if descricaoLista == 'RECOMENDAÇÃO!'  or descricaoLista == 'RECOMENDAÇÃO!!'%} active {% endif %}">
+              <span>Recomendação &#10069; </span>
             </a>
+            <!-- Botão Modal Preferências -->
+            <button type="button"  class="list-group-item list-group-item-action py-2 ripple" data-bs-toggle="modal" data-bs-target="#modalPreferencias">
+              Preferências &#9776
+            </button>
           </div>
         </div>
       </nav>  
@@ -38,21 +42,37 @@
     <div class="col-md-10" id = "Conteudo" style="position: relative; margin-top:50px;">
       
      {% if quantidadeRetorno and quantidadeRetorno > 0  %}
-      <h1 style = "border-bottom: solid 1px;"> {{descricaoLista}}</h1> {% if descricaoLista == "RECOMENDAÇÃO"  %} (Baseado nas listas de livros lidos e lendo no momento)  {% endif %}
+      <h1 style = "border-bottom: solid 1px;">{{descricaoLista}}</h1>
       
-      <div style="position: absolute; width:120%;">
+      {% if descricaoLista == 'RECOMENDAÇÃO!'  or descricaoLista == 'RECOMENDAÇÃO!!'%}
+      <div style = "margin-bottom:30px; margin-top:20px;">
+        <a href="/usuarios/paginausuario/REC" class="list-group-item list-group-item-action py-2 ripple" style = "font-family: Times New Roman; border-radius:8%; display:inline; border:solid 1px; margin-right:40px; padding:40px; {% if descricaoLista == 'RECOMENDAÇÃO!'  %} background-color:#0d6efd; color:white; {% endif %}">
+          <span>Baseada nas listas</span>
+        </a>
+        <a href="/usuarios/paginausuario/RECPREF" class="list-group-item list-group-item-action py-2 ripple" style = "border-radius:8%; display:inline; border:solid 1px; padding:40px; {% if descricaoLista == 'RECOMENDAÇÃO!!'  %} background-color:#0d6efd; color:white; {% endif %}">
+          <span>Baseada nas preferências</span>
+        </a>
+      </div>
+      {% endif %}
+      
+      <div style="position: absolute; width:100%;">
       <div class="row">
       {% for livro in listaLivros %}
         <div class = "col-md-2">
+          {% if livro.linkCapa%}
           <div class = "capasLivrosListas">
-            <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';"
-            {% if livro.linkCapa%}
-              src="{{livro.linkCapa}}"
-            {% else %}
-            src="/static/images/imagem_indisponivel.png"
-            {% endif %}>
+            <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}">
             <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
           </div>
+          {% else %}
+          <div class = "capasLivrosListas">
+            <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';">
+              {{livro.titulo}}{{livro.subtitulo}}
+            </div>
+            <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
+          </div>
+          
+          {% endif %}
         </div>
       
       {% endfor%}
@@ -78,16 +98,14 @@
             </div>
             <div class="row row-cols-1" style = "width:50%; text-align:center; margin-top:10px;">
               <div class="quadradoPaginaUsuarioFavoritos"> 
-                <div style = "display:inline-flex; margin-top:2px; margin-right:140px; border:5px dotted yellow; padding:18px; background:#d4af37;">
+                <div style = "display:inline-flex; margin-top:2px; margin-right:140px; border:5px double yellow; padding:18px; background:#d4af37;">
                   {{quantidade_livros[4]}}
                 </div>  
                 <div style = "display:inline-flex; margin-top:2px; "> 
                   FAVORITOS &#9733;
                 </div> 
               </div>
-
             </div>
-          
         </div>
   
       {% endif %}
@@ -96,6 +114,479 @@
       </div>
     </div>
   </div>
-</div>  
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalPreferencias" tabindex="-1" aria-labelledby="LabelModalPreferencias" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalPreferencias">Preferências (máximo 5)</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Arquitetura" id="checkboxArquitetura" name="checkboxArquitetura">
+          <label class="form-check-label" for="checkboxArquitetura">
+            Arquitetura
+          </label>
+        </div>
+        <div class="form-check  form-check-inline">
+          <input class="form-check-input" type="checkbox" value="Aventura" id="checkboxAventura" name="checkboxAventura">
+          <label class="form-check-label" for="checkboxAventura">
+            Aventura
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ação" id="checkboxAcao" name="checkboxAcao">
+          <label class="form-check-label" for="checkboxAcao">
+            Ação
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Arte" id="checkboxArte" name="checkboxArte">
+          <label class="form-check-label" for="checkboxArte">
+            Arte
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Artes Performáticas" id="checkboxArtesPerformaticas" name="checkboxArtesPerformaticas">
+          <label class="form-check-label" for="checkboxArtesPerformaticas">
+            Artes Performáticas
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Artes e Disciplinas da Linguagem" id="checkboxArtesEDisciplinasDaLinguagem" name="checkboxArtesEDisciplinasDaLinguagem">
+          <label class="form-check-label" for="checkboxArtesEDisciplinasDaLinguagem">
+            Artes e Disciplinas da Linguagem
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Artesanato e passatempos" id="checkboxArtesanatoEPassatempos" name="checkboxArtesanatoEPassatempos">
+          <label class="form-check-label" for="checkboxArtesanatoEPassatempos">
+            Artesanato e passatempos
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Autobiografia" id="checkboxAutobiografia" name="checkboxAutobiografia">
+          <label class="form-check-label" for="checkboxAutobiografia">
+            Autobiografia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Antiguidades e Colecionáveis" id="checkboxAntiguidadesEColecionaveis" name="checkboxAntiguidadesEColecionaveis">
+          <label class="form-check-label" for="checkboxAntiguidadesEColecionaveis">
+            Antiguidades e Colecionáveis
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Auto-Ajuda" id="checkboxAutoAjuda" name="checkboxAutoAjuda">
+          <label class="form-check-label" for="checkboxAutoAjuda">
+            Auto-Ajuda
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Auxílios de Estudo" id="checkboxAuxiliosDeEstudo" name="checkboxAuxiliosDeEstudo">
+          <label class="form-check-label" for="checkboxAuxiliosDeEstudo">
+            Auxílios de Estudo
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Bíblia" id="checkboxBiblia" name="checkboxBiblia">
+          <label class="form-check-label" for="checkboxBiblia">
+            Bíblia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Biografia" id="checkboxBiografia" name="checkboxBiografia">
+          <label class="form-check-label" for="checkboxBiografia">
+            Biografia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Casa" id="checkboxCasa" name="checkboxCasa">
+          <label class="form-check-label" for="checkboxCasa">
+            Casa
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Cozinha" id="checkboxCozinha" name="checkboxCozinha">
+          <label class="form-check-label" for="checkboxCozinha">
+            Cozinha
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Conto" id="checkboxConto" name="checkboxConto">
+          <label class="form-check-label" for="checkboxConto">
+            Conto
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Computadores" id="checkboxComputadores" name="checkboxComputadores">
+          <label class="form-check-label" for="checkboxComputadores">
+            Computadores
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Corpo, mente e espírito" id="checkboxCorpoMenteEspirito" name="checkboxCorpoMenteEspirito">
+          <label class="form-check-label" for="checkboxCorpoMenteEspirito">
+            Corpo, mente e espírito
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ciência" id="checkboxCiencia" name="checkboxCiencia">
+          <label class="form-check-label" for="checkboxCiencia">
+            Ciência
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ciência Política" id="checkboxCienciaPolitica" name="checkboxCienciaPolitica">
+          <label class="form-check-label" for="checkboxCienciaPolitica">
+            Ciência Política
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ciência Social" id="checkboxCienciaSocial" name="checkboxCienciaSocial">
+          <label class="form-check-label" for="checkboxCienciaSocial">
+            Ciência Social
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Coleções Literárias" id="checkboxColecoesLiterarias" name="checkboxColecoesLiterarias">
+          <label class="form-check-label" for="checkboxColecoesLiterarias">
+            Coleções Literárias
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Criticismo Literário" id="checkboxCriticismoLiterario" name="checkboxCriticismoLiterario">
+          <label class="form-check-label" for="checkboxCriticismoLiterario">
+            Criticismo Literário
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Drama" id="checkboxDrama" name="checkboxDrama">
+          <label class="form-check-label" for="checkboxDrama">
+            Drama
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Design" id="checkboxDesign" name="checkboxDesign">
+          <label class="form-check-label" for="checkboxDesign">
+            Design
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Direito" id="checkboxDireito" name="checkboxDireito">
+          <label class="form-check-label" for="checkboxDireito">
+            Direito
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Detetive" id="checkboxDetetive" name="checkboxDetetive">
+          <label class="form-check-label" for="checkboxDetetive">
+            Detetive
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Economia e Negócios" id="checkboxEconomiaENegocios" name="checkboxEconomiaENegocios">
+          <label class="form-check-label" for="checkboxEconomiaENegocios">
+            Economia e Negócios
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Educação" id="checkboxEducacao" name="checkboxEducacao">
+          <label class="form-check-label" for="checkboxEducacao">
+            Educação
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Estudo de Língua Estrangeira" id="checkboxEstudoDeLinguaEstrangeira" name="checkboxEstudoDeLinguaEstrangeira">
+          <label class="form-check-label" for="checkboxEstudoDeLinguaEstrangeira">
+            Estudo de Língua Estrangeira
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Esportes e Recreações" id="checkboxEsportesERecreacoes" name="checkboxEsportesERecreacoes">
+          <label class="form-check-label" for="checkboxEsportesERecreacoes">
+            Esportes e Recreações
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Épico" id="checkboxEpico" name="checkboxEpico">
+          <label class="form-check-label" for="checkboxEpico">
+            Épico
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Fantasia" id="checkboxFantasia" name="checkboxFantasia"">
+          <label class="form-check-label" for="checkboxFantasia">
+            Fantasia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Fantasia Urbana" id="checkboxFantasiaUrbana" name="checkboxFantasiaUrbana">
+          <label class="form-check-label" for="checkboxFantasiaUrbana">
+            Fantasia Urbana
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ficção" id="checkboxFiccao" name="checkboxFiccao">
+          <label class="form-check-label" for="checkboxFiccao">
+            Ficção
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ficção Científica" id="checkboxFiccaoCientifica" name="checkboxFiccaoCientifica">
+          <label class="form-check-label" for="checkboxFiccaoCientifica">
+            Ficção Científica
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ficção Distópica" id="checkboxFiccaoDistopica" name="checkboxFiccaoDistopica">
+          <label class="form-check-label" for="checkboxFiccaoDistopica">
+            Ficção Distópica
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Filosofia" id="checkboxFilosofia" name="checkboxFilosofia">
+          <label class="form-check-label" for="checkboxFilosofia">
+            Filosofia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Fotografia" id="checkboxFotografia" name="checkboxFotografia">
+          <label class="form-check-label" for="checkboxFotografia">
+            Fotografia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Família e Relacionamento" id="checkboxFamiliaERelacionamento" name="checkboxFamiliaERelacionamento">
+          <label class="form-check-label" for="checkboxFamiliaERelacionamento">
+            Família e Relacionamento
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ficção Juvenil" id="checkboxFiccaoJuvenil" name="checkboxFiccaoJuvenil">
+          <label class="form-check-label" for="checkboxFiccaoJuvenil">
+            Ficção Juvenil
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ficção Jovem Adulta" id="checkboxFiccaoJovemAdulta" name="checkboxFiccaoJovemAdulta">
+          <label class="form-check-label" for="checkboxFiccaoJovemAdulta">
+            Ficção Jovem Adulta
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="História" id="checkboxHistoria" name="checkboxHistoria">
+          <label class="form-check-label" for="checkboxHistoria">
+            História
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Humor" id="checkboxHumor" name="checkboxHumor">
+          <label class="form-check-label" for="checkboxHumor">
+            Humor
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Jogos e Atividades" id="checkboxJogosEAtividades" name="checkboxJogosEAtividades">
+          <label class="form-check-label" for="checkboxJogosEAtividades">
+            Jogos e Atividades
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Jardinagem" id="checkboxJardinagem" name="checkboxJardinagem">
+          <label class="form-check-label" for="checkboxJardinagem">
+            Jardinagem
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Matemática" id="checkboxMatematica" name="checkboxMatematica">
+          <label class="form-check-label" for="checkboxMatematica">
+            Matemática
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Medicina" id="checkboxMedicina" name="checkboxMedicina">
+          <label class="form-check-label" for="checkboxMedicina">
+            Medicina
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Música" id="checkboxMusica" name="checkboxMusica">
+          <label class="form-check-label" for="checkboxMusica">
+            Música
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Mistério" id="checkboxMisterio" name="checkboxMisterio">
+          <label class="form-check-label" for="checkboxMisterio">
+            Mistério
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Natureza" id="checkboxNatureza" name="checkboxNatureza">
+          <label class="form-check-label" for="checkboxNatureza">
+            Natureza
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Não-Ficção Juvenil" id="checkboxNaoFiccaoJuvenil" name="checkboxNaoFiccaoJuvenil">
+          <label class="form-check-label" for="checkboxNaoFiccaoJuvenil">
+            Não-Ficção Juvenil
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Não-Ficção Jovem Adulta" id="checkboxNaoFiccaoJovemAdulta" name="checkboxNaoFiccaoJovemAdulta">
+          <label class="form-check-label" for="checkboxNaoFiccaoJovemAdulta">
+            Não-Ficção Jovem Adulta
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Ópera Espacial" id="checkboxOperaEspacial" name="checkboxOperaEspacial">
+          <label class="form-check-label" for="checkboxOperaEspacial">
+            Ópera Espacial
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Pets" id="checkboxPets" name="checkboxPets">
+          <label class="form-check-label" for="checkboxPets">
+            Pets
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Poesia" id="checkboxPoesia" name="checkboxPoesia">
+          <label class="form-check-label" for="checkboxPoesia">
+            Poesia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Política" id="checkboxPolitica" name="checkboxPolitica">
+          <label class="form-check-label" for="checkboxPolitica">
+            Política
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Psicologia" id="checkboxPsicologia" name="checkboxPsicologia">
+          <label class="form-check-label" for="checkboxPsicologia">
+            Psicologia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Policial" id="checkboxPolicial" name="checkboxPolicial">
+          <label class="form-check-label" for="checkboxPolicial">
+            Policial
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Religião" id="checkboxReligiao" name="checkboxReligiao">
+          <label class="form-check-label" for="checkboxReligiao">
+            Religião
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Romance" id="checkboxRomance" name="checkboxRomance">
+          <label class="form-check-label" for="checkboxRomance">
+            Romance
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Saúde e Bem-Estar" id="checkboxSaudeEBemEstar" name="checkboxSaudeEBemEstar">
+          <label class="form-check-label" for="checkboxSaudeEBemEstar">
+            Saúde e Bem-Estar
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Suspense" id="checkboxSuspense" name="checkboxSuspense">
+          <label class="form-check-label" for="checkboxSuspense">
+            Suspense
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Tecnologia e Engenharia" id="checkboxTecnologiaEEngenharia" name="checkboxTecnologiaEEngenharia">
+          <label class="form-check-label" for="checkboxTecnologiaEEngenharia">
+            Tecnologia e Engenharia
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Transporte" id="checkboxTransporte" name="checkboxTransporte">
+          <label class="form-check-label" for="checkboxTransporte">
+            Transporte
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Terror" id="checkboxTerror" name="checkboxTerror">
+          <label class="form-check-label" for="checkboxTerror">
+            Terror
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="Viagem" id="checkboxViagem" name="checkboxViagem">
+          <label class="form-check-label" for="checkboxViagem">
+            Viagem
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="True Crime" id="checkboxTrueCrime" name="checkboxTrueCrime">
+          <label class="form-check-label" for="checkboxTrueCrime">
+            True Crime
+          </label>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick = "submitAtualizarPreferências();" class="btn btn-primary">Salvar preferências</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!--Main layout-->
+
+<form action="" method="POST" id="formPreferencias" style = "display:none;">
+    <input type="text" id="stringPreferencias" name="stringPreferencias">
+</form>
+
+
+<script>
+    function submitAtualizarPreferências() {
+        let checkboxes =
+            document.getElementsByClassName('form-check-input');
+        let resultado = "";
+        var contadorChecked = 0;
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                resultado += checkboxes[i].value + "#";
+                contadorChecked++;
+            }
+        }
+        resultado = resultado.slice(0,-1);
+        if (contadorChecked > 5){
+          alert("Selecione apenas 5");
+        } 
+        else {
+        document.getElementById("stringPreferencias").value = resultado;
+        document.getElementById("formPreferencias").action = "/usuarios/atualizarPreferencias";
+        document.getElementById("formPreferencias").submit();
+        loading();
+        }        
+    }
+
+    function preencherPreferencias(){
+      let checkboxes =
+      document.getElementsByClassName('form-check-input');
+      let stringPreferencias = '{{stringPreferencias}}'
+      let preferencias = stringPreferencias.split("#")
+      for (var i = 0; i < checkboxes.length; i++){
+        if (preferencias.includes(checkboxes[i].value)){
+          checkboxes[i].checked = true;
+        }
+      }
+    }
+
+    preencherPreferencias();
+</script>
+
 {% endblock conteudo %}

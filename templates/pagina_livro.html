@@ -21,16 +21,16 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-2"> <!-- Inicio div da parte esquerda da página -->
       {% if livro.linkCapa%}
       <img src="{{livro.linkCapa}}" style = "border-radius:15px; width:110%;">
       {% else %}
-      <img src="/static/images/imagem_indisponivel.png" style = "border-radius:15px;">
+      <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:215.59px; height:296.44px; font-size:40px;" >{{livro.titulo}}{{livro.subtitulo}} </div>
       {% endif %}
 
-      {% if current_user.is_authenticated and existe == 0 %}
+      {% if current_user.is_authenticated and existe == 0 %}  <!-- Inicio If se usuario está logado e o livro não está na lista dele -->
 
-      <!-- Button trigger modal -->
+     
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style = "margin-top:20px;">
         Adicionar em sua lista 	&oplus;
       </button>
@@ -75,9 +75,9 @@
         </div>
       </div>
   
-      {% endif %}
+      {% endif %} <!-- Fim If se usuario está logado e o livro não está na lista dele -->
       
-      {% if current_user.is_authenticated and existe == 1 %}
+      {% if current_user.is_authenticated and existe == 1 %} <!-- Inicio If se usuario está logado e o livro  está na lista dele -->
 
       <div class="btn-group" role="group" style = "margin-top:20px;">
         <button type="button" class="btn btn-primary" style = "opacity:1; !important" disabled>Livro já na lista {{emqueLista}}</button>
@@ -158,8 +158,20 @@
 
       {% endif  %}
 
+      <div style = "margin-top:20px;">
+          <span onclick = "atualizarNotaPagina(1)" id = "estrelaNota1" class="fa fa-star fa-2x {% if notaLivro >= 1 %} checked {% endif %}"></span>
+          <span onclick = "atualizarNotaPagina(2)" id = "estrelaNota2" class="fa fa-star fa-2x {% if notaLivro >= 2 %} checked {% endif %}"></span>
+          <span onclick = "atualizarNotaPagina(3)" id = "estrelaNota3" class="fa fa-star fa-2x {% if notaLivro >= 3 %} checked {% endif %}" ></span>
+          <span onclick = "atualizarNotaPagina(4)" id = "estrelaNota4" class="fa fa-star fa-2x {% if notaLivro >= 4 %} checked {% endif %}" ></span>
+          <span onclick = "atualizarNotaPagina(5)" id = "estrelaNota5" class="fa fa-star fa-2x {% if notaLivro >= 5 %} checked {% endif %}" ></span>
+       </div>
+
+      <button type="button" onclick = "atualizarNotaDB('{{livro.id}}')" class="btn btn-primary" style = "margin-top:20px; background-color:#D4AF37 !important; width:100%;">
+        Atualizar nota &#10010;
+      </button>
       
-      {% endif  %}
+      
+      {% endif  %} <!-- Fim If se usuario está logado e o livro  está na lista dele -->
 
       <form action="" method="POST" id="formExcluir" style = "display:none;">
           <input type="text" id="idLivroExcluir" name="idLivroExcluir">
@@ -171,8 +183,22 @@
           <input type="text" id="idLivro" name="idLivro">
           <input type="text"  id="tipoLista" name="tipoLista">
       </form>
-         
-    </div>
+
+      <form action="" method="POST" id="formAdicionarNota" style = "display:none;">
+        <input type="text" id="livro_id_nota" name="livro_id_nota">
+        <input type="text" id="nota_livro" name="nota_livro">
+      </form>
+
+      <div class="card" style = "margin-top:10px;">
+           <div class="card-body text-center"> 
+             <h5 class="mt-1">Média de avaliação</h5>
+             <span class="mediaLivro">{{media_livro}}</span>
+               <h5 class="mt-1">de 5.0</h5>
+           </div>
+      </div>
+      
+    </div> <!-- Fim div da parte esquerda da página -->
+    
     <div class="col-md-10 style = "padding-left:50px">
       <div class = "container">
         <div class="row" style = "padding:10px;">
@@ -268,7 +294,54 @@
     document.getElementById("formExcluirFavoritos").submit();
     loading();
   }
-  
+
+  function atualizarNotaPagina(nota){
+    document.getElementById("estrelaNota1").className  = "fa fa-star fa-2x";
+    document.getElementById("estrelaNota2").className  = "fa fa-star fa-2x";
+    document.getElementById("estrelaNota3").className  = "fa fa-star fa-2x";
+    document.getElementById("estrelaNota4").className  = "fa fa-star fa-2x";
+    document.getElementById("estrelaNota5").className  = "fa fa-star fa-2x";
+    if (nota == 1){
+      document.getElementById("estrelaNota1").className  = "fa fa-star fa-2x checked";
+  }
+    else if (nota == 2){
+      document.getElementById("estrelaNota1").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota2").className  = "fa fa-star fa-2x checked";
+    }
+    else if (nota == 3){
+      document.getElementById("estrelaNota1").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota2").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota3").className  = "fa fa-star fa-2x checked";
+    }
+    else if (nota == 4){
+      document.getElementById("estrelaNota1").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota2").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota3").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota4").className  = "fa fa-star fa-2x checked";
+    }
+    else if (nota == 5){
+      document.getElementById("estrelaNota1").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota2").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota3").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota4").className  = "fa fa-star fa-2x checked";
+      document.getElementById("estrelaNota5").className  = "fa fa-star fa-2x checked";
+    }
+    document.getElementById("nota_livro").value = nota;
+  }
+
+  function atualizarNotaDB(idLivroNota){
+    document.getElementById("livro_id_nota").value = idLivroNota;
+    notaLivro = document.getElementById("nota_livro").value;
+    if ((notaLivro != 1 ) && (notaLivro != 2) && (notaLivro != 3) && (notaLivro != 4) && (notaLivro != 5) ){
+      alert("Selecione uma nota");
+    } 
+    else{
+      document.getElementById("formAdicionarNota").action = "/crud_livros/adicionarNotaEmLivro/" + idLivroNota + "/" + notaLivro;
+      document.getElementById("formAdicionarNota").submit();
+      loading();
+    }
+  }
+    
 </script>
 
 {% endblock conteudo %}

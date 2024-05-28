@@ -54,7 +54,7 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   @app.before_request
   def before_request():
       session.permanent = True
-      app.permanent_session_lifetime = timedelta(minutes=5)
+      app.permanent_session_lifetime = timedelta(minutes=30)
       session.modified = True
       g.user = current_user
   

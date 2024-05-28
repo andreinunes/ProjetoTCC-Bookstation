@@ -3,6 +3,7 @@ from flask_login import logout_user, current_user
 from modelos.usuarios_modelo import Usuario
 from modelos.formularios_modelo import LoginForm
 from modelos.usuarios_listas_modelo import Usuario_Lista
+from modelos.usuarios_preferencias_modelo import Usuario_Preferencia
 from funcoes_auxiliares import verificar_forca_senha
 
 def cadastrar():
@@ -58,7 +59,8 @@ def pagina_usuario():
     return redirect(url_for('indice'))
   else:
     quantidade_livros = Usuario_Lista.quantidade_livro_lista(current_user.id)
-    return render_template('pagina_usuario.html', usuario=current_user,quantidade_livros=quantidade_livros)
+    stringPreferencias = Usuario_Preferencia.get_preferencias_usuario(current_user.id)
+    return render_template('pagina_usuario.html', usuario=current_user,quantidade_livros=quantidade_livros, stringPreferencias = stringPreferencias)
 
 def buscar_lista_usuario(tipoLista):
   if not current_user.is_authenticated:
@@ -77,12 +79,31 @@ def buscar_lista_usuario(tipoLista):
     elif tipoLista == 'FAV':
       descricaoLista = "FAVORITOS"
     elif tipoLista == 'REC':
-      descricaoLista = "RECOMENDAÇÃO"
-    lista_livros = Usuario_Lista.get_lista_livros(current_user.id,tipoLista)
+      descricaoLista = "RECOMENDAÇÃO!"
+    elif tipoLista == 'RECPREF':
+      descricaoLista = "RECOMENDAÇÃO!!"
+    stringPreferencias = Usuario_Preferencia.get_preferencias_usuario(current_user.id)
+    lista_livros = Usuario_Lista.get_lista_livros(current_user.id,tipoLista, stringPreferencias)
     quantidadeRetorno = 0
     if lista_livros is None:
       quantidadeRetorno = 0
     else:
       quantidadeRetorno = len(lista_livros)
       
-    return render_template('pagina_usuario.html', usuario=current_user ,listaLivros = lista_livros, quantidadeRetorno = quantidadeRetorno, descricaoLista = descricaoLista)
+    return render_template('pagina_usuario.html', usuario=current_user ,listaLivros = lista_livros, quantidadeRetorno = quantidadeRetorno, descricaoLista = descricaoLista,stringPreferencias = stringPreferencias)
+
+
+def atualizar_preferencias_usuario():
+  if not current_user.is_authenticated:
+    return redirect(url_for('indice'))
+  else:
+    if request.method == 'GET':
+      return redirect(url_for('indice'))
+    elif request.method == 'POST':
+      stringPreferencias = request.form['stringPreferencias']
+      retornoAtualizaoPreferencias = Usuario_Preferencia.atualizar_preferencias_usuario(current_user.id,stringPreferencias)
+      return redirect(url_for('usuarios_bp.pagina_usuario'))
+
+
+      
+      

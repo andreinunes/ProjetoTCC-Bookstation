@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <div class = "row" style="background:#C0C0C0; margin-top:9px; width:40%; border-radius:5%; padding:1%; box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);">
+  <div class = "row" style="background:#C0C0C0; margin-top:9px; width:40%; border-radius:5%; padding:1%; box-shadow: 0 4px 10px 0 rgb(0 0 0 / 5%), 0 4px 20px 0 rgb(0 0 0 / 5%);">
     <div class = "col-md-12"> 
       <div style = "text-align:left; font-size:30px;">
         O que você irá encontrar? <br>
@@ -40,15 +40,20 @@
       <div style = "text-align:left; font-size:10px;">
         {% for livro in livrosFantasia %}
           
-            <div class = "capasLivrosListas" style = "margin-right:5px;">
-              <img style = "width:70%;" onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';"
-              {% if livro.linkCapa%}
-                src="{{livro.linkCapa}}"
-              {% else %}
-              src="/static/images/imagem_indisponivel.png"
-              {% endif %}>
-              <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
-            </div>
+        {% if livro.linkCapa%}
+        <div class = "capasLivrosListas">
+          <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:70%;">
+          <span class="tooltiptext" style = "font-size:20px;" >{{livro.titulo}} {{livro.subtitulo}} </span>
+        </div>
+        {% else %}
+        <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
+          <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:85.59px; height:123.19px;">
+            {{livro.titulo}}{{livro.subtitulo}}
+          </div>
+          <span class="tooltiptext" style = "font-size:20px;">{{livro.titulo}} {{livro.subtitulo}} </span>
+        </div>
+
+        {% endif %}
         {% endfor%}
         <div style="background:black; width:100%; height:20px; z-index:-1;">  </div>
       </div>
@@ -58,19 +63,24 @@
       <div style = "text-align:left; font-size:20px;">
         {% for livro in livrosBiografia %}
 
-            <div class = "capasLivrosListas" style = "margin-right:5px;">
-              <img  style = "width:70%;" onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';"
-              {% if livro.linkCapa%}
-                src="{{livro.linkCapa}}"
-              {% else %}
-              src="/static/images/imagem_indisponivel.png"
-              {% endif %}>
-              <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
-            </div>
+        {% if livro.linkCapa%}
+        <div class = "capasLivrosListas">
+          <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:70%;">
+          <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
+        </div>
+        {% else %}
+        <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
+          <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:85.59px; height:123.19px;">
+            {{livro.titulo}}{{livro.subtitulo}}
+          </div>
+          <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
+        </div>
+
+        {% endif %}
 
 
         {% endfor%}
-        <div style="background:black; width:100%; height:20px; z-index:-1;">  </div>
+        <div style="background:black; width:100%; height:20px; z-index:-1;"></div>
       </div>
       <div style = "text-align:left; font-size:20px;">
         Drama
@@ -78,15 +88,20 @@
       <div style = "text-align:left; font-size:20px;">
         {% for livro in livrosDrama %}
 
-            <div class = "capasLivrosListas" style = "margin-right:5px;">
-              <img style = "width:70%;"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';"
-              {% if livro.linkCapa%}
-                src="{{livro.linkCapa}}"
-              {% else %}
-              src="/static/images/imagem_indisponivel.png"
-              {% endif %}>
-              <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
-            </div>
+        {% if livro.linkCapa%}
+        <div class = "capasLivrosListas">
+          <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:70%;">
+          <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
+        </div>
+        {% else %}
+        <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
+          <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:85.59px; height:123.19px;">
+            {{livro.titulo}}{{livro.subtitulo}}
+          </div>
+          <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
+        </div>
+
+        {% endif %}
         {% endfor%}
       </div>
     </div>

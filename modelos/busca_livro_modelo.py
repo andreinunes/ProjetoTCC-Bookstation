@@ -1,6 +1,7 @@
 from flask import request
 from modelos.livros_generos_modelo import Livro_Genero
 from modelos.usuarios_listas_modelo import Usuario_Lista
+from modelos.listas_livros_modelo import Lista_Livro
 from flask_login import current_user
 from funcoes_auxiliares import remove_html_tags, formatar_palavra_busca, verificar_prioridade, realizar_request_api,verificar_ISBNs,converter_data
 
@@ -73,6 +74,7 @@ class Busca_Livro():
     emQueLista = ''
     verificarexiste = []
     existeEmFavoritos = 0
+    notaLivro = -1
     if request.args.get('idDoLivro') is None:
       url = "https://www.googleapis.com/books/v1/volumes/" + str(id) + '?key=' + API_KEY
       jsondata = realizar_request_api(url)
@@ -83,7 +85,9 @@ class Busca_Livro():
           livroExisteLista = verificarexiste[0]
           existeEmFavoritos = verificarexiste[1]
           emQueLista = verificarexiste[2]
-      return [livro,livroExisteLista,emQueLista,existeEmFavoritos]
+          notaLivro = verificarexiste[3]
+      media_livro = Lista_Livro.buscar_media_livro(str(id))
+      return [livro,livroExisteLista,emQueLista,existeEmFavoritos, notaLivro,media_livro]
     else:
       url = "https://www.googleapis.com/books/v1/volumes/" + str(request.args.get('idDoLivro')) + '?key=' + API_KEY
       jsondata = realizar_request_api(url)
@@ -94,8 +98,10 @@ class Busca_Livro():
           livroExisteLista = verificarexiste[0]
           emQueLista = verificarexiste[2]
           existeEmFavoritos = verificarexiste[1]
+          notaLivro = verificarexiste[3]
+      media_livro = Lista_Livro.buscar_media_livro(str(request.args.get('idDoLivro')))
       
-      return [livro,request.args.get('urlAtual'),livroExisteLista,emQueLista,existeEmFavoritos]
+      return [livro,request.args.get('urlAtual'),livroExisteLista,emQueLista,existeEmFavoritos,notaLivro,media_livro]
   
   @staticmethod
   def gerar_dictionary_livro(livro):

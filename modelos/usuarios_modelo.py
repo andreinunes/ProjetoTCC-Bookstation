@@ -10,6 +10,7 @@ class Usuario(db.Model):
   email = db.Column(db.String(100),nullable = False)
   senha = db.Column(db.String(100),nullable = False)
   listas = db.relationship('Usuario_Lista', backref='usuario', lazy=True)
+  preferencias = db.relationship('Usuario_Preferencia', backref='usuario', lazy=True)
 
   @property
   def is_authenticated(self):

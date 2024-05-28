@@ -231,6 +231,24 @@ display: none;
   box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
 }
 
+.checked{
+  color: orange;
+}
 
+.mediaLivro{
+  font-size: 45px;
+  color: green;
+}
 
+.capaLivro{
+  width: 131px;
+  height: 186px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000; /* opcional: para ver as bordas do retângulo */
+  font-size: 16px; /* ajuste conforme necessário */
+  text-align: center; /* centraliza o texto dentro do retângulo */
+}
 </style>

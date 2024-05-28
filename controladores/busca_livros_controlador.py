@@ -48,9 +48,9 @@ def buscar_livro_id(id = None):
 
   if request.args.get('idDoLivro') is None:
     retornoBuscaLivro= Busca_Livro.buscar_livro_id(id)
-    return render_template("pagina_livro.html", livro=retornoBuscaLivro[0],existe = retornoBuscaLivro[1], emqueLista = retornoBuscaLivro[2],existeEmFavoritos = retornoBuscaLivro[3])
+    return render_template("pagina_livro.html", livro=retornoBuscaLivro[0],existe = retornoBuscaLivro[1], emqueLista = retornoBuscaLivro[2],existeEmFavoritos = retornoBuscaLivro[3], notaLivro = retornoBuscaLivro[4], media_livro = retornoBuscaLivro[5])
   else:
     retornoBuscaLivro = Busca_Livro.buscar_livro_id()
     livro = retornoBuscaLivro[0]
     urlBusca = retornoBuscaLivro[1]
-    return render_template("pagina_livro.html",livro=livro,urlBusca=urlBusca,existe = retornoBuscaLivro[2], emqueLista = retornoBuscaLivro[3], existeEmFavoritos = retornoBuscaLivro[4])
+    return render_template("pagina_livro.html",livro=livro,urlBusca=urlBusca,existe = retornoBuscaLivro[2], emqueLista = retornoBuscaLivro[3], existeEmFavoritos = retornoBuscaLivro[4], notaLivro = retornoBuscaLivro[5], media_livro = retornoBuscaLivro[6])

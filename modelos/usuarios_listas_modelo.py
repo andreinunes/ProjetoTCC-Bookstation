@@ -49,9 +49,12 @@ class Usuario_Lista(db.Model):
     db.session.commit()
 
   @staticmethod
-  def get_lista_livros(usuario_id, tipoLista):
+  def get_lista_livros(usuario_id, tipoLista,stringPreferencias):
     if tipoLista == "REC":
       livros = Usuario_Lista.get_lista_livros_recomendados(usuario_id)
+      return livros
+    elif tipoLista == "RECPREF":
+      livros = Usuario_Lista.get_lista_livros_recomendados_preferencias(usuario_id,stringPreferencias)
       return livros
     else:
       lista_livros = Usuario_Lista.query.filter_by(
@@ -86,31 +89,36 @@ class Usuario_Lista(db.Model):
     existeEmLista = 0
     emQualListaExiste = ''
     existeEmFavoritos = 0
+    notaLivro = -1
     if Lista_Livro.query.filter_by(lista_id=livros_lidos.lista_id,
                                    livro_id=idLivro).count() != 0:
       existeEmLista = 1
       emQualListaExiste = 'Livros Lidos'
+      notaLivro = Lista_Livro.buscar_nota_livro(livros_lidos.lista_id,usuario_id,idLivro)
 
     if Lista_Livro.query.filter_by(lista_id=lendo_momento.lista_id,
                                    livro_id=idLivro).count() != 0:
       existeEmLista = 1
       emQualListaExiste = 'Lendo no Momento'
+      notaLivro = Lista_Livro.buscar_nota_livro(lendo_momento.lista_id,usuario_id,idLivro)
 
     if Lista_Livro.query.filter_by(lista_id=leituras_futuras.lista_id,
                                    livro_id=idLivro).count() != 0:
       existeEmLista = 1
       emQualListaExiste = 'Leituras Futuras'
+      notaLivro = Lista_Livro.buscar_nota_livro(leituras_futuras.lista_id,usuario_id,idLivro)
 
     if Lista_Livro.query.filter_by(lista_id=livros_abandonados.lista_id,
                                    livro_id=idLivro).count() != 0:
       existeEmLista = 1
       emQualListaExiste = 'Livros Abandonados'
+      notaLivro = Lista_Livro.buscar_nota_livro(livros_abandonados.lista_id,usuario_id,idLivro)
 
     if Lista_Livro.query.filter_by(lista_id=livros_favoritos.lista_id,
                                    livro_id=idLivro).count() != 0:
       existeEmFavoritos = 1
 
-    return [existeEmLista, existeEmFavoritos, emQualListaExiste]
+    return [existeEmLista, existeEmFavoritos, emQualListaExiste,notaLivro]
 
   @staticmethod
   def adicionar_livro_lista(usuario_id, tipoLista, idLivro):
@@ -330,3 +338,132 @@ class Usuario_Lista(db.Model):
     quantidade_fav = Lista_Livro.query.filter_by(lista_id=livros_favoritos.lista_id).count()
     
     return [quantidade_ll, quantidade_lm, quantidade_lf, quantidade_la, quantidade_fav]
+
+
+  @staticmethod
+  def get_id_lista(usuario_id, idLivro):
+    livros_lidos = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
+                                                 tipo_lista="LL").first()
+    lendo_momento = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
+                                                  tipo_lista="LM").first()
+    leituras_futuras = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
+                                                     tipo_lista="LF").first()
+    livros_abandonados = Usuario_Lista.query.filter_by(
+        usuario_id=usuario_id, tipo_lista="LA").first()
+
+
+    emQualListaExiste = ''
+    if Lista_Livro.query.filter_by(lista_id=livros_lidos.lista_id,
+                                   livro_id=idLivro).count() != 0:
+      emQualListaExiste = livros_lidos.lista_id
+
+    if Lista_Livro.query.filter_by(lista_id=lendo_momento.lista_id,
+                                   livro_id=idLivro).count() != 0:
+      emQualListaExiste = lendo_momento.lista_id
+
+    if Lista_Livro.query.filter_by(lista_id=leituras_futuras.lista_id,
+                                   livro_id=idLivro).count() != 0:
+      emQualListaExiste = leituras_futuras.lista_id
+
+    if Lista_Livro.query.filter_by(lista_id=livros_abandonados.lista_id,
+                                   livro_id=idLivro).count() != 0:
+      emQualListaExiste = livros_abandonados.lista_id
+
+    return emQualListaExiste
+
+
+  @staticmethod
+  def get_lista_livros_recomendados_preferencias(usuario_id,stringPreferencias):
+    listaPreferencias = stringPreferencias.split('#')
+    contadorListaPreferencias = len(listaPreferencias)
+    lista_livros_recomendados = []
+    
+    livros_lidos = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
+       tipo_lista="LL").first()
+    lendo_momento = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
+        tipo_lista="LM").first()
+    leituras_futuras = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista = "LF").first()
+    leituras_abandonadas = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista = "LA").first()
+    
+    
+    lista_livros_lidos = Lista_Livro.query.filter_by( lista_id=livros_lidos.lista_id).all()
+    lista_livros_momento = Lista_Livro.query.filter_by(
+    lista_id=lendo_momento.lista_id).all()
+    lista_livros_futuros = Lista_Livro.query.filter_by(
+      lista_id=leituras_futuras.lista_id).all()
+    lista_livros_abandonados= Lista_Livro.query.filter_by(
+      lista_id=leituras_abandonadas.lista_id).all()
+    merge_lista_livros = lista_livros_lidos + lista_livros_momento + lista_livros_futuros + lista_livros_abandonados
+    listaExclusao = []
+    for item in merge_lista_livros:
+      listaExclusao.append(item.livro_id)
+
+    if contadorListaPreferencias == 1:
+      lista_livros_recomendados = Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[0], listaExclusao, 18)
+
+    elif contadorListaPreferencias == 2:
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[0], listaExclusao, 9)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[1], listaExclusao, 9)
+      
+    elif contadorListaPreferencias == 3:
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[0], listaExclusao, 6)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[1], listaExclusao, 6)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[2], listaExclusao, 6)
+
+    elif contadorListaPreferencias == 4:
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[0], listaExclusao, 4)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[1], listaExclusao, 4)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[2], listaExclusao, 5)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[3], listaExclusao, 5)
+
+    elif contadorListaPreferencias == 5:
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[0], listaExclusao, 4)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[1], listaExclusao, 4)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[2], listaExclusao, 4)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[3], listaExclusao, 3)
+      for item in lista_livros_recomendados:
+        listaExclusao.append(item.id_livro)
+      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
+        listaPreferencias[4], listaExclusao, 3)
+
+    
+    livros = []
+    jsondata = ""
+    for item in lista_livros_recomendados:
+      url = 'https://www.googleapis.com/books/v1/volumes/' + item.id_livro + '?key=' + API_KEY
+      jsondata = realizar_request_api(url)
+      dict_livro = Usuario_Lista.gerar_dicionario(jsondata)
+      livros.append(dict_livro)
+    return livros

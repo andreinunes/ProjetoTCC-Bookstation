@@ -16,13 +16,15 @@
   {% for livro in livros %}
     <div class="row" style = "margin-left: auto; margin-right:auto; margin-bottom:10px; max-width:60%;border-radius:30px; padding:3px; background: linear-gradient(#4337d440, rgba(0, 0, 0, 0));">
       <div class="col-md-3">
-        <img onclick = "submit('{{livro.id}}');"
         {% if livro.linkCapa%}
-          src="{{livro.linkCapa}}"
+        <img onclick = "submit('{{livro.id}}');" src="{{livro.linkCapa}}" style = "border-radius:30px;">
         {% else %}
-        <img src="/static/images/imagem_indisponivel.png"
+
+        <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "border-radius:30px; margin-left:15px;">
+          {{livro.titulo}}{{livro.subtitulo}}
+        </div>
+
         {% endif %}
-        style = "border-radius:30px;">
       </div>
   
         <div class = "col-md-9">
