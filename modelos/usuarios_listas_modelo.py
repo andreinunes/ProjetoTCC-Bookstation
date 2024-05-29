@@ -1,11 +1,13 @@
+import os
 from modelos.listas_livros_modelo import Lista_Livro
 from modelos.livros_generos_modelo import Livro_Genero
 from database import db
-from funcoes_auxiliares import realizar_request_api, remove_html_tags, verificar_ISBNs, converter_data
+from funcoes_auxiliares import realizar_request_api, remove_html_tags, verificar_ISBNs, converter_data,get_dados_livro
 import operator
 
-API_KEY = 'AIzaSyBJSFy6VtqvSEJeHk9h8tCgWpgJSht00ac'
-
+auxiliar_chamada_api = '?key='
+principal_chamada_api = 'https://www.googleapis.com/books/v1/volumes/'
+API_KEY = str(os.getenv("API_KEY"))
 
 class Usuario_Lista(db.Model):
   __tablename__ = 'usuarios_listas'
@@ -67,7 +69,7 @@ class Usuario_Lista(db.Model):
         livros = []
         jsondata = ""
         for item in lista_livros:
-          url = 'https://www.googleapis.com/books/v1/volumes/' + item.livro_id + '?key=' + API_KEY
+          url = principal_chamada_api + item.livro_id + auxiliar_chamada_api + API_KEY
           jsondata = realizar_request_api(url)
           dict_livro = Usuario_Lista.gerar_dicionario(jsondata)
           livros.append(dict_livro)
@@ -189,69 +191,62 @@ class Usuario_Lista(db.Model):
 
   @staticmethod
   def gerar_dicionario(livro):
-    tituloDoLivro = ""
-    autoresDoLivro = []
-    subtituloDoLivro = ""
-    linkCapaDoLivro = ""
-    descricaoLivro = ""
-    idDoLivro = ""
-    dataPublicacaoLivro = ""
-    ISBN = []
-    editoraLivro = ""
-    numeroPaginasLivro = ""
-    categoriasDoLivro = []
+    retorno_api = livro['volumeInfo']
+    titulo_livro = get_dados_livro('title', retorno_api)
+    subtitulo_livro = get_dados_livro('subtitle', retorno_api)
+    link_capa_livro = livro['volumeInfo']['imageLinks'][
+        'thumbnail'] if 'imageLinks' in livro['volumeInfo'] else ""
+    descricao_livro = remove_html_tags(
+        get_dados_livro('description', retorno_api))
+    id_livro = livro['id'] if 'id' in livro else ""
+    editora_livro = get_dados_livro('publisher', retorno_api)
+    numero_paginas_livro = get_dados_livro('pageCount', retorno_api)
+    data_publicacao_livro = get_dados_livro('publishedDate', retorno_api)
+    link_preview_livro = get_dados_livro('previewLink', retorno_api)
 
-    if 'title' in livro['volumeInfo']:
-      tituloDoLivro = livro['volumeInfo']['title']
-    if 'subtitle' in livro['volumeInfo']:
-      subtituloDoLivro = livro['volumeInfo']['subtitle']
-    if 'imageLinks' in livro['volumeInfo']:
-      linkCapaDoLivro = livro['volumeInfo']['imageLinks']['thumbnail']
+    categorias_livro = []
+    autores_livro = []
+    ISBN = []
+
     if 'authors' in livro['volumeInfo']:
-      maximoAutores = 0
+      maximo_autores = 0
       for autores in livro['volumeInfo']['authors']:
-        autoresDoLivro.append(autores)
-        maximoAutores += 1
-        if maximoAutores == 3:
+        autores_livro.append(autores)
+        maximo_autores += 1
+        if maximo_autores == 3:
           break
-    if 'description' in livro['volumeInfo']:
-      descricaoLivro = remove_html_tags(livro['volumeInfo']['description'])
-    if 'id' in livro: idDoLivro = livro['id']
+
     if 'categories' in livro['volumeInfo']:
       for categoria in livro['volumeInfo']['categories']:
-        categoriasDoLivro.append(categoria)
-    if 'publishedDate' in livro['volumeInfo']:
-      dataPublicacaoLivro = livro['volumeInfo']['publishedDate']
-    if 'publisher' in livro['volumeInfo']:
-      editoraLivro = livro['volumeInfo']['publisher']
+        categorias_livro.append(categoria)
+
     if 'industryIdentifiers' in livro['volumeInfo']:
       for ISBNs in livro['volumeInfo']['industryIdentifiers']:
         ISBN.append({
             'ISBN': ISBNs['type'],
             'Identificador': ISBNs['identifier']
         })
-    if 'pageCount' in livro['volumeInfo']:
-      numeroPaginasLivro = livro['volumeInfo']['pageCount']
 
-    generosDoLivro = Livro_Genero.buscar_genero_webscrapper(
-        idDoLivro, categoriasDoLivro)
+    generos_do_livro = Livro_Genero.buscar_genero_webscrapper(
+      id_livro, categorias_livro)
     ISBN = verificar_ISBNs(ISBN)
 
     dict_livro = {
-        "titulo": tituloDoLivro,
-        "subtitulo": subtituloDoLivro,
-        "autores": autoresDoLivro,
-        "linkCapa": linkCapaDoLivro,
-        "descricao": descricaoLivro,
-        "id": str(idDoLivro),
-        "categorias": generosDoLivro,
-        "listacategoria": '#'.join(generosDoLivro),
-        "listaautores": '#'.join(autoresDoLivro),
-        "dataPublicacao": converter_data(dataPublicacaoLivro),
+        "titulo": titulo_livro,
+        "subtitulo": subtitulo_livro,
+        "autores": autores_livro,
+        "linkCapa": link_capa_livro,
+        "descricao": descricao_livro,
+        "id": str(id_livro),
+        "categorias": generos_do_livro,
+        "listacategoria": '#'.join(generos_do_livro),
+        "listaautores": '#'.join(autores_livro),
+        "dataPublicacao": converter_data(data_publicacao_livro),
         "ISBN10": ISBN['ISBN10'],
         "ISBN13": ISBN['ISBN13'],
-        "editora": editoraLivro,
-        "numeroPaginas": str(numeroPaginasLivro),
+        "editora": editora_livro,
+        "numeroPaginas": str(numero_paginas_livro),
+        "linkPreview": link_preview_livro,
     }
     return dict_livro
 
@@ -310,7 +305,7 @@ class Usuario_Lista(db.Model):
     livros = []
     jsondata = ""
     for item in livros_recomendados:
-      url = 'https://www.googleapis.com/books/v1/volumes/' + item.id_livro + '?key=' + API_KEY
+      url = principal_chamada_api + item.id_livro + auxiliar_chamada_api + API_KEY
       jsondata = realizar_request_api(url)
       dict_livro = Usuario_Lista.gerar_dicionario(jsondata)
       livros.append(dict_livro)
@@ -398,71 +393,26 @@ class Usuario_Lista(db.Model):
     for item in merge_lista_livros:
       listaExclusao.append(item.livro_id)
 
-    if contadorListaPreferencias == 1:
-      lista_livros_recomendados = Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[0], listaExclusao, 18)
+    pesos = {
+      1: [18],
+      2: [9, 9],
+      3: [6, 6, 6],
+      4: [4, 4, 5, 5],
+      5: [4, 4, 4, 3, 3]
+    }
 
-    elif contadorListaPreferencias == 2:
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[0], listaExclusao, 9)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[1], listaExclusao, 9)
-      
-    elif contadorListaPreferencias == 3:
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[0], listaExclusao, 6)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[1], listaExclusao, 6)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[2], listaExclusao, 6)
-
-    elif contadorListaPreferencias == 4:
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[0], listaExclusao, 4)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[1], listaExclusao, 4)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[2], listaExclusao, 5)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[3], listaExclusao, 5)
-
-    elif contadorListaPreferencias == 5:
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[0], listaExclusao, 4)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[1], listaExclusao, 4)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[2], listaExclusao, 4)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[3], listaExclusao, 3)
-      for item in lista_livros_recomendados:
-        listaExclusao.append(item.id_livro)
-      lista_livros_recomendados = lista_livros_recomendados + Livro_Genero.getColecaoGenerosRecomendacao(
-        listaPreferencias[4], listaExclusao, 3)
+    if contadorListaPreferencias in pesos:
+      lista_livros_recomendados = []
+      for i, peso in enumerate(pesos[contadorListaPreferencias]):
+          recomendacoes = Livro_Genero.getColecaoGenerosRecomendacao(listaPreferencias[i], listaExclusao, peso)
+          lista_livros_recomendados.extend(recomendacoes)
+          listaExclusao.extend(item.id_livro for item in recomendacoes)
 
     
     livros = []
     jsondata = ""
     for item in lista_livros_recomendados:
-      url = 'https://www.googleapis.com/books/v1/volumes/' + item.id_livro + '?key=' + API_KEY
+      url = principal_chamada_api + item.id_livro + auxiliar_chamada_api + API_KEY
       jsondata = realizar_request_api(url)
       dict_livro = Usuario_Lista.gerar_dicionario(jsondata)
       livros.append(dict_livro)

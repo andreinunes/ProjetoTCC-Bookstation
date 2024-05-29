@@ -1,4 +1,4 @@
-import requests, urllib.request, json, re
+import urllib.request, json, re
 from datetime import datetime
 from urllib.parse import quote
 
@@ -13,18 +13,6 @@ def formatar_palavra_busca(palavraBusca):
   palavraBusca = urllib.parse.quote(palavraBusca)
 
   return palavraBusca
-
-def verificar_prioridade(dict_livro,textoBusca):
-  titulo = dict_livro['titulo']
-  subtitulo = dict_livro['subtitulo']
-  descricao = dict_livro['descricao']
-  
-  if textoBusca.casefold() in titulo.casefold():
-    return 0
-  elif textoBusca.casefold() in subtitulo.casefold():
-    return 0
-  
-  return 1
 
 def realizar_request_api(url):
   jsondata = json.loads(urllib.request.urlopen(url).read())
@@ -58,7 +46,7 @@ def converter_data(data):
     
     data_formatada = f'{mes} {data_obj.day}, {data_obj.year}'
     return data_formatada
-  except:
+  except ValueError:
     return data
 
 
@@ -158,3 +146,9 @@ def getDicionarioGeneros():
       'True Crime': 'True Crime'
   }
   return dicionarioGeneros
+
+def get_dados_livro(busca,retorno_api):
+  if busca in retorno_api:
+    return retorno_api[busca]
+  else:
+    return ''

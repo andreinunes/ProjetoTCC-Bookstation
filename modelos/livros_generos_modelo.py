@@ -29,10 +29,8 @@ class Livro_Genero(db.Model):
     listaGeneroResultado = []
 
     if buscar_livro:
-      listaGeneroResultado = []
       colecaoGenerosLivro = Livro_Genero.query.filter_by(id_livro=id).all()
-      for i in range(len(colecaoGenerosLivro)):
-        listaGeneroResultado.append(colecaoGenerosLivro[i].nome_genero)
+      listaGeneroResultado = [genero.nome_genero for genero in colecaoGenerosLivro]
     else:
 
       headers = {
@@ -43,39 +41,28 @@ class Livro_Genero(db.Model):
       response = requests.get(url, headers = headers) 
       soup = BeautifulSoup(response.content, 'html.parser')
       retornos = soup.find_all(class_="fl")
-      lista = []
 
-      for retorno in retornos:
-        lista.append(str(retorno))
+      lista_generos_webscrapper = ' '.join(remove_html_tags(str(retorno)) for retorno in retornos)
+      lista_categorias_api = ' '.join(str(categoria) for categoria in categorias or [])
+      string_generos = f"{lista_generos_webscrapper} {lista_categorias_api}"
 
-      for i in range(len(lista)):
-        lista[i] = remove_html_tags(lista[i])
+      listaGeneroResultado = [
+        dicionarioGeneros[chave]
+        for chave in dicionarioGeneros.keys()
+        if chave.casefold() in string_generos.casefold()
+      ]
 
-      listaGenerosWebScrapper = ' '.join(str(e) for e in lista)
-      listaCategoriasAPI = ' '.join(str(e) for e in categorias)
-      stringGeneros = listaGenerosWebScrapper + ' ' + listaCategoriasAPI
-      listaGeneroResultado = []
-
-      for chave in dicionarioGeneros.keys():
-        if chave.casefold() in stringGeneros.casefold():
-          listaGeneroResultado.append(dicionarioGeneros[chave])
-
-      for items in list(set(listaGeneroResultado)):
-        livro_genero = Livro_Genero(id, items)
+      for item in set(listaGeneroResultado):
+        livro_genero = Livro_Genero(id, item)
         db.session.add(livro_genero)
-        db.session.commit()
+      db.session.commit()
 
-    if len(list(set(listaGeneroResultado))) == 0:
-      if buscaGenero != None:
-        livro_genero = Livro_Genero(id, buscaGenero)
-        db.session.add(livro_genero)
-        db.session.commit()
+    if not listaGeneroResultado or (buscaGenero and buscaGenero not in listaGeneroResultado):
+      if buscaGenero:
+          livro_genero = Livro_Genero(id, buscaGenero)
+          db.session.add(livro_genero)
+          db.session.commit()
 
-    if buscaGenero not in list(set(listaGeneroResultado)):
-      if buscaGenero != None:
-        livro_genero = Livro_Genero(id, buscaGenero)
-        db.session.add(livro_genero)
-        db.session.commit()
 
     return list(set(listaGeneroResultado))
 

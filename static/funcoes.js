@@ -4,11 +4,11 @@ function loading(){
 }
 
 function submitBusca(){
-  var textoBusca = document.getElementById("buscaLivro").value;
+  let textoBusca = document.getElementById("buscaLivro").value;
   if (textoBusca == ''){
     textoBusca = ' ';
   }
-  var selectBusca = document.getElementById("selectBusca").value;
+  let selectBusca = document.getElementById("selectBusca").value;
   if (selectBusca == 'Titulo'){
     document.getElementById("formBusca").action = "/livros/buscarLivrosTitulo/" + textoBusca + "/0";
   }
@@ -20,9 +20,9 @@ function submitBusca(){
 }
 
 function limpar_url(){
-  var uri = window.location.toString();
+  let uri = window.location.toString();
   if (uri.indexOf("?") > 0) {
-      var clean_uri = uri.substring(0, uri.indexOf("?"));
+      let clean_uri = uri.substring(0, uri.indexOf("?"));
       window.history.replaceState({}, document.title, clean_uri);
   }
 }

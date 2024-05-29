@@ -1,6 +1,8 @@
 from flask import render_template, request
 from modelos.busca_livro_modelo import Busca_Livro
 
+html_pagina_busca = "busca_livros.html"
+
 def buscar_por_titulo(nomeLivro, indiceInicial):
 
   retornoBusca = Busca_Livro.buscar(nomeLivro, indiceInicial,"titulo")
@@ -8,7 +10,7 @@ def buscar_por_titulo(nomeLivro, indiceInicial):
   url = retornoBusca[1]
   possuiProximo = retornoBusca[2]
  
-  return render_template("busca_livros.html",
+  return render_template(html_pagina_busca,
                          livros=livros,
                          url=url,
                          possuiProximo=possuiProximo,
@@ -25,7 +27,7 @@ def buscar_por_autor(nomeAutor, indiceInicial):
   url = retornoBusca[1]
   possuiProximo = retornoBusca[2]
 
-  return render_template("busca_livros.html",
+  return render_template(html_pagina_busca,
                          livros=livros,
                          url=url,
                          possuiProximo=possuiProximo,
@@ -41,7 +43,7 @@ def buscar_por_genero(genero):
   colecao_genero = retornoBuscaGenero[0]
   livros = retornoBuscaGenero[1]
         
-  return render_template("busca_livros.html", colecao_genero = colecao_genero, livros = livros, generoBuscado = genero)
+  return render_template(html_pagina_busca, colecao_genero = colecao_genero, livros = livros, generoBuscado = genero)
 
 
 def buscar_livro_id(id = None):

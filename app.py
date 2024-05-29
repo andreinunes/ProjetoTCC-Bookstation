@@ -1,15 +1,22 @@
 from flask import Flask, render_template, session,g,send_file
 from flask_migrate import Migrate
 from flask_login import LoginManager,current_user
+from flask_wtf.csrf import CSRFProtect
 from database import db
 from rotas.usuarios_bp import usuarios_bp
 from rotas.busca_livros_bp import busca_livros_bp
 from rotas.crud_livros_bp import crud_livros_bp
 from modelos.usuarios_modelo import Usuario
 from modelos.busca_livro_modelo import Busca_Livro
+from dotenv import load_dotenv
+import os
 
 
 from datetime import timedelta
+
+def configure():
+    load_dotenv()
+
 
 def create_app(database_uri = 'sqlite:///weblivros.db'):
   app = Flask(__name__, static_url_path='/static')
@@ -19,6 +26,7 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   migrate = Migrate(app, db)
   lm = LoginManager()
   lm.init_app(app)
+  csrf = CSRFProtect(app)
   app.register_blueprint(usuarios_bp, url_prefix='/usuarios')
   app.register_blueprint(busca_livros_bp, url_prefix='/livros')
   app.register_blueprint(crud_livros_bp, url_prefix='/crud_livros')
@@ -62,5 +70,6 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
 
 if __name__ == '__main__':
     app = create_app()
+    configure()
     app.debug = True
     app.run(host='0.0.0.0',port=81)

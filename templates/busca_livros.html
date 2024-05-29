@@ -20,7 +20,7 @@
         <img onclick = "submit('{{livro.id}}');" src="{{livro.linkCapa}}" style = "border-radius:30px;">
         {% else %}
 
-        <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "border-radius:30px; margin-left:15px;">
+        <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "border-radius:30px; margin-left:15px;" role = "link">
           {{livro.titulo}}{{livro.subtitulo}}
         </div>
 
@@ -33,17 +33,27 @@
             {% if livro.autores%}
               Autor(es):
               {% for autores in livro.autores%}
-                <div onclick="loading();"><a class = "autorLivro" href="{{url_for('livros_bp.buscar_por_autor', nomeAutor = autores, indiceInicial = 0 )}}" style= "color:black;">{{autores}}</a></div>
+                <div onclick="loading();" role = "link" ><a class = "autorLivro" href="{{url_for('livros_bp.buscar_por_autor', nomeAutor = autores, indiceInicial = 0 )}}" style= "color:black;">{{autores}}</a></div>
               {% endfor %}
             {% endif %}
 
           {% if livro.categorias%}
-            <span onclick="loading();" style = "display:inline">
+            <span style = "display:block;">
             {% for categoria in livro.categorias%}
-              <a class = "linkGenero" href="/livros/buscarLivrosGenero/{{categoria}}">{{categoria}}</a>
+              <a onclick="loading();" class = "linkGenero" href="/livros/buscarLivrosGenero/{{categoria}}">{{categoria}}</a>
             {% endfor %}
               </span>
           {% endif %}
+
+          {% if livro.linkPreview%}
+            
+             <span style = "display:inline-flex;" > 
+              <a onclick="loading();" href="{{livro.linkPreview}}"><img src="https://encrypted.google.com/intl/pt-BR/googlebooks/images/gbs_preview_button1.gif?hl=pt-br"></a>
+              </span>
+            
+              
+          {% endif %}
+          
         </div>
     </div>
   {% endfor %}

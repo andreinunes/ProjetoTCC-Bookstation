@@ -331,7 +331,7 @@
 
   function atualizarNotaDB(idLivroNota){
     document.getElementById("livro_id_nota").value = idLivroNota;
-    notaLivro = document.getElementById("nota_livro").value;
+    let notaLivro = document.getElementById("nota_livro").value;
     if ((notaLivro != 1 ) && (notaLivro != 2) && (notaLivro != 3) && (notaLivro != 4) && (notaLivro != 5) ){
       alert("Selecione uma nota");
     } 
