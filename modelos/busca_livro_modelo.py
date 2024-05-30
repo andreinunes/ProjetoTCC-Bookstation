@@ -15,7 +15,6 @@ class Busca_Livro():
   @staticmethod
   def buscar(busca, indiceInicial, tipoBusca):
 
-    textoAntesFormatacao = busca
     busca = formatar_palavra_busca(busca)
     livros = []
     url = ''

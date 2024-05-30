@@ -20,7 +20,7 @@
         <img onclick = "submit('{{livro.id}}');" src="{{livro.linkCapa}}" style = "border-radius:30px;">
         {% else %}
 
-        <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "border-radius:30px; margin-left:15px;" role = "link">
+        <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "border-radius:30px; margin-left:15px;" role = "link" tabIndex="0" >
           {{livro.titulo}}{{livro.subtitulo}}
         </div>
 
@@ -33,7 +33,7 @@
             {% if livro.autores%}
               Autor(es):
               {% for autores in livro.autores%}
-                <div onclick="loading();" role = "link" ><a class = "autorLivro" href="{{url_for('livros_bp.buscar_por_autor', nomeAutor = autores, indiceInicial = 0 )}}" style= "color:black;">{{autores}}</a></div>
+                <div onclick="loading();" role = "link" tabIndex="0" ><a class = "autorLivro" href="{{url_for('livros_bp.buscar_por_autor', nomeAutor = autores, indiceInicial = 0 )}}" style= "color:black;">{{autores}}</a></div>
               {% endfor %}
             {% endif %}
 
@@ -48,7 +48,7 @@
           {% if livro.linkPreview%}
             
              <span style = "display:inline-flex;" > 
-              <a onclick="loading();" href="{{livro.linkPreview}}"><img src="https://encrypted.google.com/intl/pt-BR/googlebooks/images/gbs_preview_button1.gif?hl=pt-br"></a>
+              <a onclick="loading();" href="{{livro.linkPreview}}"><img src="https://encrypted.google.com/intl/pt-BR/googlebooks/images/gbs_preview_button1.gif?hl=pt-br" alt = "Google Pré-visualização"></a>
               </span>
             
               

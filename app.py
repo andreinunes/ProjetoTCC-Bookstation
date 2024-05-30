@@ -26,7 +26,7 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   migrate = Migrate(app, db)
   lm = LoginManager()
   lm.init_app(app)
-  csrf = CSRFProtect(app)
+  CSRFProtect(app)
   app.register_blueprint(usuarios_bp, url_prefix='/usuarios')
   app.register_blueprint(busca_livros_bp, url_prefix='/livros')
   app.register_blueprint(crud_livros_bp, url_prefix='/crud_livros')
