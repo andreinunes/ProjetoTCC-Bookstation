@@ -89,5 +89,3 @@ class Livro_Genero(db.Model):
     colecaoGeneros = Livro_Genero.query.filter(Livro_Genero.nome_genero == genero, ~Livro_Genero.id_livro.in_(listaExclusao)).limit(quantidadeBusca).all()
 
     return colecaoGeneros
-
-db.create_all()

@@ -417,6 +417,3 @@ class Usuario_Lista(db.Model):
       dict_livro = Usuario_Lista.gerar_dicionario(jsondata)
       livros.append(dict_livro)
     return livros
-
-
-db.create_all()
