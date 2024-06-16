@@ -50,4 +50,5 @@ class Lista_Livro(db.Model):
     else:
       media_livro = media_livro / quantidade_notas
     return media_livro
-    
+
+db.create_all()

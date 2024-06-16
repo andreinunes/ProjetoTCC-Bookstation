@@ -57,3 +57,6 @@ class Usuario(db.Model):
       return usuario
     else:
       return '0'
+
+
+db.create_all()

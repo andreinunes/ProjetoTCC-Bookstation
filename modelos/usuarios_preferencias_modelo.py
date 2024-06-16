@@ -67,7 +67,8 @@ class Usuario_Preferencia(db.Model):
       stringPreferencias = '#'.join(listaPreferencias)
     return stringPreferencias
     
-    
+
+db.create_all()
     
 
   
