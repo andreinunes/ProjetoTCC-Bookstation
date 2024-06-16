@@ -78,7 +78,7 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   return app
 
 if __name__ == '__main__':
-    app = create_app()
+    meu_app = create_app()
     configure()
-    app.debug = True
-    app.run(host='0.0.0.0',port=81)
+    meu_app.debug = True
+    meu_app.run(host='0.0.0.0',port=81)
