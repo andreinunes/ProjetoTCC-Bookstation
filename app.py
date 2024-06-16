@@ -26,7 +26,6 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   migrate = Migrate(app, db)
   lm = LoginManager()
   lm.init_app(app)
-  CSRFProtect(app)
   app.register_blueprint(usuarios_bp, url_prefix='/usuarios')
   app.register_blueprint(busca_livros_bp, url_prefix='/livros')
   app.register_blueprint(crud_livros_bp, url_prefix='/crud_livros')
@@ -58,6 +57,16 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   def internal_error(error):
       db.session.rollback()
       return render_template('erro.html',erro = 500), 500
+
+  @app.errorhandler(503)
+  def service_error(error):
+    db.session.rollback()
+    return render_template('erro.html',erro = 503), 503
+    
+  @app.errorhandler(429)
+  def too_many_requests(error):
+    db.session.rollback()
+    return render_template('erro.html',erro = 429), 429
   
   @app.before_request
   def before_request():

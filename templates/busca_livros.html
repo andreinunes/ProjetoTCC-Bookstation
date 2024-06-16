@@ -4,6 +4,12 @@
 <script type="text/javascript">
         function auxiliar_busca(){ document.getElementById("buscaLivro").value = "{{textoBuscaLivro}}";}
         auxiliar_busca();
+
+        {% if generoBuscado%}
+          document.title =  '{{generoBuscado}}';
+        {% else %}
+          document.title =  '{{textoBuscaLivro}}';
+        {% endif %}
 </script>
 
 {% if livros %}
@@ -105,4 +111,6 @@
     <input type="text" id="idDoLivro" name="idDoLivro">
   <input type="text"  id="urlAtual" name="urlAtual">
 </form>
+
+
 {% endblock conteudo %}

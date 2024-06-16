@@ -51,8 +51,8 @@ class Usuario(db.Model):
 
   @staticmethod
   def login_usuario(form):
-    usuario = Usuario.query.filter_by(email=form.email.data).first()
-    if usuario and pbkdf2_sha256.verify(form.senha.data, usuario.senha):
+    usuario = Usuario.query.filter_by(email=form.email.data.strip()).first()
+    if usuario and pbkdf2_sha256.verify(form.senha.data.strip(), usuario.senha):
       login_user(usuario)
       return usuario
     else:

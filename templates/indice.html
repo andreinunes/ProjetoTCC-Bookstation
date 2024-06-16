@@ -3,16 +3,14 @@
 <div id = "Conteúdo">
   {% with messages = get_flashed_messages() %}
     {% if messages %}
-    <div class="alert alert-warning" role="alert">
-    <ul class=flashes>
+    <div class="alerta" role="alert" id = "alerta" name = "alerta">
       {% for message in messages %}
         <li>{{ message }}</li>
       {% endfor %}
-      </ul>
     </div>
   {% endif %}
   {% endwith %}
-  <div class = "row" style="background:#ffeed2;margin-left:-100px; margin-right:-100px; margin-top:9px; box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);">
+  <div class = "row" style="background:#ffeed2;margin-left:-100px; margin-right:-50px; margin-top:9px; box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);">
     <div class = "col-md-12"> 
       <div class = "tituloSite" style = "text-align:center; font-size:100px;">
         BOOKSTATION
@@ -29,84 +27,244 @@
     </div>
   </div>
 
-  <div class = "row" style="background:#C0C0C0; margin-top:9px; width:40%; border-radius:5%; padding:1%; box-shadow: 0 4px 10px 0 rgb(0 0 0 / 5%), 0 4px 20px 0 rgb(0 0 0 / 5%);">
-    <div class = "col-md-12"> 
-      <div style = "text-align:left; font-size:30px;">
-        O que você irá encontrar? <br>
-      </div>
-      <div style = "text-align:left; font-size:20px;">
-        Fantasia
-      </div>
-      <div style = "text-align:left; font-size:10px;">
-        {% for livro in livrosFantasia %}
-          
-        {% if livro.linkCapa%}
-        <div class = "capasLivrosListas">
-          <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:70%;">
-          <span class="tooltiptext" style = "font-size:20px;" >{{livro.titulo}} {{livro.subtitulo}} </span>
+  <div class = "row">
+    <div class = "col-md-6"> 
+      <div class = 'container-fluid' style="background:#C0C0C0;border-radius:5%; box-shadow: 0 4px 10px 0 rgb(0 0 0 / 5%), 0 4px 20px 0 rgb(0 0 0 / 5%);">
+        <div class = "row">
+          <h2>O que você irá encontrar?</h2>
         </div>
-        {% else %}
-        <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
-          <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:85.59px; height:123.19px;">
-            {{livro.titulo}}{{livro.subtitulo}}
+        <div class = "row" style = "padding:0.5vw;">
+          <h3>Fantasia</h3>
+        </div>
+        <div class = "row" style = "border-bottom:solid 2px;">
+          {% for livro in livrosFantasia %}
+
+          {% if livro.linkCapa%}
+          <div class = "col">
+            <div class = "capasLivrosListas">
+              <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:5vw;">
+              <span class="tooltiptext" style = "font-size:20px;" >{{livro.titulo}} {{livro.subtitulo}} </span>
+            </div>
           </div>
-          <span class="tooltiptext" style = "font-size:20px;">{{livro.titulo}} {{livro.subtitulo}} </span>
-        </div>
-
-        {% endif %}
-        {% endfor%}
-        <div style="background:black; width:100%; height:20px; z-index:-1;">  </div>
-      </div>
-      <div style = "text-align:left; font-size:20px;">
-        Biografia
-      </div>
-      <div style = "text-align:left; font-size:20px;">
-        {% for livro in livrosBiografia %}
-
-        {% if livro.linkCapa%}
-        <div class = "capasLivrosListas">
-          <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:70%;">
-          <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
-        </div>
-        {% else %}
-        <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
-          <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:85.59px; height:123.19px;">
-            {{livro.titulo}}{{livro.subtitulo}}
+          {% else %}
+          <div class = "col">
+            <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
+              <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:5vw; height:7vw;">
+                {{livro.titulo}}{{livro.subtitulo}}
+              </div>
+              <span class="tooltiptext" style = "font-size:20px;">{{livro.titulo}} {{livro.subtitulo}} </span>
+            </div>
           </div>
-          <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
-        </div>
-
-        {% endif %}
-
-
-        {% endfor%}
-        <div style="background:black; width:100%; height:20px; z-index:-1;"></div>
-      </div>
-      <div style = "text-align:left; font-size:20px;">
-        Drama
-      </div>
-      <div style = "text-align:left; font-size:20px;">
-        {% for livro in livrosDrama %}
-
-        {% if livro.linkCapa%}
-        <div class = "capasLivrosListas">
-          <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:70%;">
-          <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
-        </div>
-        {% else %}
-        <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
-          <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:85.59px; height:123.19px;">
-            {{livro.titulo}}{{livro.subtitulo}}
+          {% endif %}
+          {% endfor%}
+          <div class ="col" style = "text-align:center;">
+              <a onclick="loading();" href="{{url_for('livros_bp.buscar_por_genero', genero = 'Fantasia', page=1)}}"><img width="150vw" src="/static/images/botao_veja_mais.png"></a>
           </div>
-          <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
         </div>
+        <div class = "row" style = "padding:0.5vw;">
+          <h3>Biografia</h3>
+        </div>
+        <div class = "row" style = "border-bottom:solid 2px;">
+          {% for livro in livrosBiografia %}
 
-        {% endif %}
-        {% endfor%}
+          {% if livro.linkCapa%}
+          <div class = "col">
+            <div class = "capasLivrosListas">
+              <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:5vw;">
+              <span class="tooltiptext" style = "font-size:20px;" >{{livro.titulo}} {{livro.subtitulo}} </span>
+            </div>
+          </div>
+          {% else %}
+          <div class = "col">
+            <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
+              <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:5vw; height:7vw;">
+                {{livro.titulo}}{{livro.subtitulo}}
+              </div>
+              <span class="tooltiptext" style = "font-size:20px;">{{livro.titulo}} {{livro.subtitulo}} </span>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor%}
+          <div class ="col" style = "text-align:center;">
+             <a onclick="loading();" href="{{url_for('livros_bp.buscar_por_genero', genero = 'Biografia', page=1)}}"><img width="150vw" src="/static/images/botao_veja_mais.png"></a>
+          </div>
+        </div>
+      
+      <div class = "row" style = "padding:0.5vw;">
+          <h3>Drama</h3>
+        </div>
+        <div class = "row" style = "border-bottom:solid 2px;">
+          {% for livro in livrosDrama %}
+
+          {% if livro.linkCapa%}
+          <div class = "col">
+            <div class = "capasLivrosListas">
+              <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "width:5vw;">
+              <span class="tooltiptext" style = "font-size:20px;" >{{livro.titulo}} {{livro.subtitulo}} </span>
+            </div>
+          </div>
+          {% else %}
+          <div class = "col">
+            <div class = "capasLivrosListas" style = "margin-right:40px;bottom:10px;">
+              <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:5vw; height:7vw;">
+                {{livro.titulo}}{{livro.subtitulo}}
+              </div>
+              <span class="tooltiptext" style = "font-size:20px;">{{livro.titulo}} {{livro.subtitulo}} </span>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor%}
+          <div class ="col" style = "text-align:center;">
+             <a onclick="loading();" href="{{url_for('livros_bp.buscar_por_genero', genero = 'Drama', page=1)}}"><img width="150vw" src="/static/images/botao_veja_mais.png"></a>
+          </div>
+        </div>
+      <div class = "row" style = "padding:0.5vw;">
+        <div style = "text-align:left; font-size:20px;">
+          <button type="button" class="btn btn-warning" onclick = "maisGeneros();" style = "background-color:#e88504;"> &oplus;Veja mais gêneros</button>
+        </div> 
+      </div>  
+      </div>
+    </div>
+
+    <div class = "col-md-6">
+      <div class = "container-fluid">
+        <div class = "row">
+          <div class = "col-md-4" id = "MaisGeneros1" style="border-radius:5%; padding:1%; display:none;">
+            <div class="list-group list-group-flush mx-3 mt-1">
+              <a href="/livros/buscarLivrosGenero/Arquitetura" class="list-group-item list-group-item-action py-2 ripple" style = "background-color: #e88504;text-align:center;color:white;border-radius:5%; margin-bottom:10px;">
+               <span>Arquitetura</span>
+              </a>
+              <a href="/livros/buscarLivrosGenero/Ficção" class="list-group-item list-group-item-action py-2 ripple"  style = "background-color: #e88504;text-align:center;color:white;border-radius:5%; margin-bottom:10px;">
+                <span>Ficção</span>
+              </a>
+            <a href="/livros/buscarLivrosGenero/Aventura" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Aventura</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Conto" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Conto</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Terror" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Terror</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Policial" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Policial</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Mistério" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Mistério</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Detetive" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Detetive</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Suspense" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Suspense</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Política" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Política</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Ficção Distópica" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Ficção Distópica</span>
+            </a>
+            </div> 
+          </div>  
+          <div class = "col-md-4" id = "MaisGeneros2" style="border-radius:5%; padding:1%; display:none;">
+            <div class="list-group list-group-flush mx-3 mt-1">
+            <a href="/livros/buscarLivrosGenero/Ficção Cientifíca" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Ficção Cientifíca</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Romance" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Romance</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Filosofia" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Filosofia</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Arte" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Arte</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Auto-Ajuda" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Auto-Ajuda</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Auxílios de Estudo" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Auxílios de Estudo</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Biblia" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Biblia</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Casa" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Casa</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Cozinha" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Cozinha</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Computadores" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Computadores</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Matemática" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%;">
+                <span>Matemática</span>
+            </a>
+            </div> 
+          </div> 
+          <div class = "col-md-4" id = "MaisGeneros3" style="border-radius:5%; padding:1%;display:none;">
+            <div class="list-group list-group-flush mx-3 mt-1">
+            <a href="/livros/buscarLivrosGenero/Ciência" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Ciência</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Ciência Política" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Ciência Política</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Ciência Social" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%;margin-bottom:10px;">
+              <span>Ciência Social</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Design" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Design</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Direito" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%;margin-bottom:10px;">
+              <span>Direito</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Educação" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%;margin-bottom:10px;">
+              <span>Educação</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Fotografia" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%;margin-bottom:10px;">
+              <span>Fotografia</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/História" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%;margin-bottom:10px;">
+              <span>História</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Humor" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%;margin-bottom:10px;">
+              <span>Humor</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Épico" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%; margin-bottom:10px;">
+              <span>Épico</span>
+            </a>
+            <a href="/livros/buscarLivrosGenero/Ópera Espacial" class="list-group-item list-group-item-action py-2 ripple" style="background-color: #e88504; text-align:center; color:white; border-radius:5%;">
+              <span>Ópera Espacial</span>
+            </a>
+            </div> 
+          </div>
+          </div> 
+        </div>
       </div>
     </div>
   </div>
-  
 </div>
+
+<script> 
+fadeOutEffect();
+
+function maisGeneros(){
+  var x = document.getElementById("MaisGeneros1");
+  var y = document.getElementById("MaisGeneros2");
+  var z = document.getElementById("MaisGeneros3");
+  
+  if (x.style.display === "none") {
+    x.style.display = "block";
+    y.style.display = "block";
+    z.style.display = "block";
+  } else {
+    x.style.display = "none";
+    y.style.display = "none";
+    z.style.display = "none";
+  }
+}
+</script>
 
 {% endblock conteudo %}

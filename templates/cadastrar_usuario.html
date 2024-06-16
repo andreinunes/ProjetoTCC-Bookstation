@@ -2,17 +2,15 @@
 {% block conteudo %}
 {% with messages = get_flashed_messages() %}
   {% if messages %}
-  <div class="alert alert-warning" role="alert">
-  <ul class=flashes>
+  <div class="alerta" role="alert" id = "alerta" name = "alerta" style = "font-size: 20px; background-color:red; color:white;">
     {% for message in messages %}
       <li>{{ message }}</li>
     {% endfor %}
-    </ul>
   </div>
-  {% endif %}
+{% endif %}
 {% endwith %}
 
-  <div class="row justify-content-md-center">
+  <div id = "Conteúdo" class="row justify-content-md-center">
     <div class="col-12 col-md-7">
       <div class="bg-white p-4 p-md-5 rounded shadow-sm">
         <div class="row">
@@ -33,11 +31,14 @@
               <input type="email" class="form-control" id="emailUsuario" name="emailUsuario" required>
             </div>
             <div class="col-12">
+              <div class="alert alert-secondary" role="alert" id="resultadoVerificacaoEmail" style = "display:none;"></div>
+            </div>
+            <div class="col-12">
               <label for="senhaUsuario" class="form-label">Senha</label>
               <input type="password" class="form-control" id="senhaUsuario" name="senhaUsuario" required>
             </div>
             <div class="col-12">
-              <div class="alert alert-secondary" role="alert" id="resultadoForcaSenha" style = "display:none;" >name="senhaUsuario" required>
+              <div class="alert alert-secondary" role="alert" id="resultadoForcaSenha" style = "display:none;"></div>
             </div>
             <div class="col-12">
               <label for="confirmacaoSenhaUsuario" class="form-label">Confirme a senha</label>
@@ -45,7 +46,7 @@
             </div>
             <div class="col-12">
               <div class="d-grid">
-                <button class="btn btn-primary btn-lg" type="button" onclick="checkPasswordStrength()">Cadastrar</button>
+                <button class="btn btn-primary btn-lg" type="button" onclick="checarSenhaEEmail()">Cadastrar</button>
               </div>
             </div>
           </div>
@@ -53,21 +54,58 @@
       </div>
     </div>
   </div>
+</div>
 
 <script>
-async function checkPasswordStrength() {
-            const senhaParaChecar = document.getElementById('senhaUsuario').value;
-            let resposta = await fetch(`/usuarios/checar-senha?senhaUsuario=${senhaParaChecar}`);
-            let dados = await resposta.json();
-            if (dados.resultado != ""){
-              document.getElementById('resultadoForcaSenha').textContent = dados.resultado;
-              document.getElementById('resultadoForcaSenha').style.display = "block";
+async function checarSenhaEEmail() {
+            let verificacaoCampos = verificarCampos();
+            if (verificacaoCampos == true){
+              document.getElementById('resultadoForcaSenha').textContent = "";
+              document.getElementById('resultadoForcaSenha').style.display = "none"; 
+              document.getElementById('resultadoVerificacaoEmail').textContent = "";
+              document.getElementById('resultadoVerificacaoEmail').style.display = "none";
+              const senhaParaChecar = document.getElementById('senhaUsuario').value;
+              const emailParaChecar = document.getElementById('emailUsuario').value;
+              let respostaSenha = await fetch(`/usuarios/checar-senha?senhaUsuario=${senhaParaChecar}`);
+              let respostaEmail = await fetch(`/usuarios/checar-email?emailUsuario=${emailParaChecar}`);
+    
+              let dadosSenha = await respostaSenha.json();
+              let dadosEmail = await respostaEmail.json();
+              if ((dadosSenha.resultado != "") || (dadosEmail.resultado != "") ){
+                if (dadosSenha.resultado != ""){
+                document.getElementById('resultadoForcaSenha').textContent = dadosSenha.resultado;
+                document.getElementById('resultadoForcaSenha').style.display = "block";
+                }
+                if (dadosEmail.resultado != ""){
+                  document.getElementById('resultadoVerificacaoEmail').textContent = dadosEmail.resultado;
+                  document.getElementById('resultadoVerificacaoEmail').style.display = "block";
+                }
+              }
+              else{
+                document.getElementById("formularioCadastro").submit();
+              }
             }
             else{
-              document.getElementById("formularioCadastro").submit();
+              alert("Preencha todos os campos");
             }
 
-        }
+}
+
+function verificarCampos(){
+  let nomeUsuario = document.getElementById('nomeUsuario').value;
+  let emailUsuario = document.getElementById('emailUsuario').value;
+  let senhaUsuario = document.getElementById('senhaUsuario').value;
+  let confirmacaoSenhaUsuario = document.getElementById('confirmacaoSenhaUsuario').value;
+
+  if ((nomeUsuario == "") || (emailUsuario == "") || (senhaUsuario == "") || (confirmacaoSenhaUsuario == "")){
+    return false
+  }
+  else{
+    return true
+  }
+}
+fadeOutEffect();
+document.title = 'Cadastro de Usuário';
 </script>
 
 {% endblock conteudo %}

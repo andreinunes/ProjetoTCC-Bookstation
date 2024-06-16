@@ -9,11 +9,23 @@
             <p class="lead">
                 A página que você está procurando não foi encontrada.
               </p>
-            {% else %}
+            {% elif erro == 500 %}
             <h1 class="display-1 fw-bold">500</h1>
             <p class="fs-3">Erro do servidor interno.</p>
             <p class="lead">
                 O servidor encontrou um erro e não pode processar sua requisição.
+              </p>
+            {% elif erro == 503 %}
+            <h1 class="display-1 fw-bold">503</h1>
+            <p class="fs-3">Serviço indisponível</p>
+            <p class="lead">
+                O serviço está indisponível no momento, ou houve erro na busca pelo livro.
+              </p>
+            {% elif erro == 429 %}
+            <h1 class="display-1 fw-bold">429</h1>
+            <p class="fs-3">Limite de requests atingidos</p>
+            <p class="lead">
+                Foi atingido o número máximo de busca do Google Livros.
               </p>
             {% endif %}
         </div>

@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 
+
 <!--Main Navigation-->
   <!-- Sidebar -->
 <div class = "container-fluid">
+  
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alerta" role="alert" id = "alerta" name = "alerta">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% endwith %}
+
   <div class="row">
     <div class="col-md-2">
       <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
@@ -40,7 +52,7 @@
   <!-- Sidebar -->
   <!--Main layout-->
     <div class="col-md-10" id = "Conteudo" style="position: relative; margin-top:50px;">
-      
+
      {% if quantidadeRetorno and quantidadeRetorno > 0  %}
       <h1 style = "border-bottom: solid 1px;">{{descricaoLista}}</h1>
       
@@ -87,25 +99,52 @@
           </div>
         </div>
       </div>
+        {% if descricaoLista == 'RECOMENDAÇÃO!'  or descricaoLista == 'RECOMENDAÇÃO!!'%}
+        <div style = "margin-bottom:30px; margin-top:20px;">
+          <a href="/usuarios/paginausuario/REC" class="list-group-item list-group-item-action py-2 ripple" style = "font-family: Times New Roman; border-radius:8%; display:inline; border:solid 1px; margin-right:40px; padding:40px; {% if descricaoLista == 'RECOMENDAÇÃO!'  %} background-color:#0d6efd; color:white; {% endif %}">
+            <span>Baseada nas listas</span>
+          </a>
+          <a href="/usuarios/paginausuario/RECPREF" class="list-group-item list-group-item-action py-2 ripple" style = "border-radius:8%; display:inline; border:solid 1px; padding:40px; {% if descricaoLista == 'RECOMENDAÇÃO!!'  %} background-color:#0d6efd; color:white; {% endif %}">
+            <span>Baseada nas preferências</span>
+          </a>
+        </div>
+        {% endif %}
+      
   
       {% else %}
         <div class = "col-md-10">
-            <div class="row row-cols-2" style = "width:50%; text-align:center;">
-              <div class="quadradoPaginaUsuario">Lidos<br> {{quantidade_livros[0]}}</div>
-                <div class="quadradoPaginaUsuario">Lendo<br>{{quantidade_livros[1]}}</div>
-                <div class="quadradoPaginaUsuario">Futuros<br> {{quantidade_livros[2]}}</div>
-                <div class="quadradoPaginaUsuario">Abandonados<br>{{quantidade_livros[3]}}</div>
-            </div>
-            <div class="row row-cols-1" style = "width:50%; text-align:center; margin-top:10px;">
-              <div class="quadradoPaginaUsuarioFavoritos"> 
-                <div style = "display:inline-flex; margin-top:2px; margin-right:140px; border:5px double yellow; padding:18px; background:#d4af37;">
-                  {{quantidade_livros[4]}}
-                </div>  
-                <div style = "display:inline-flex; margin-top:2px; "> 
-                  FAVORITOS &#9733;
-                </div> 
+          <div class = "container-fluid" style = "padding: 5vw 50vw 5vw 15vw;" >
+              <div class="row" style = "width:60vh;">
+                <div class = "col">
+                  <div class="quadradoPaginaUsuario">Lidos<br> {{quantidade_livros[0]}}</div>
+                  </div>
+                <div class = "col">
+                  <div class="quadradoPaginaUsuario">Lendo<br>{{quantidade_livros[1]}}</div>
+                </div>
               </div>
-            </div>
+              <div class="row" style = "width:60vh;">
+                <div class = "col">
+                  <div class="quadradoPaginaUsuario">Futuros<br> {{quantidade_livros[2]}}</div>
+                </div>
+                <div class = "col">
+                  <div class="quadradoPaginaUsuario">Abandonados<br>{{quantidade_livros[3]}}</div>
+                </div>
+              </div>
+              <div class="row" id = "quadradoPaginaUsuarioFavoritos" style = "width:60vh;">
+                <div class = "col">
+                    <div style = "display:inline-flex; border:5px double yellow; padding:18px; background:#d4af37;">
+                      {{quantidade_livros[4]}}
+                    </div>
+                </div>
+                <div class = "col" style = "padding:1vw;">
+                    <div style = "display:inline-flex;"> 
+                      FAVORITOS &#9733;
+                    </div> 
+                </div>
+                  </div>
+                </div>
+              </div>
+          </div>
         </div>
   
       {% endif %}
@@ -587,6 +626,7 @@
     }
 
     preencherPreferencias();
+    document.title =  'Perfil do ' + '{{usuario.nome}}'
 </script>
 
 {% endblock conteudo %}

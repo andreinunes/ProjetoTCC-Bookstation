@@ -6,17 +6,18 @@ function loading(){
 function submitBusca(){
   let textoBusca = document.getElementById("buscaLivro").value;
   if (textoBusca == ''){
-    textoBusca = ' ';
+    alert('Preencha campo de busca');
+  } else{
+    let selectBusca = document.getElementById("selectBusca").value;
+    if (selectBusca == 'Titulo'){
+      document.getElementById("formBusca").action = "/livros/buscarLivrosTitulo/" + textoBusca + "/0";
+    }
+    else if (selectBusca == 'Autor'){
+      document.getElementById("formBusca").action = "/livros/buscarLivrosAutor/" + textoBusca + "/0";
+    }
+    document.getElementById("formBusca").submit();
+    loading();
   }
-  let selectBusca = document.getElementById("selectBusca").value;
-  if (selectBusca == 'Titulo'){
-    document.getElementById("formBusca").action = "/livros/buscarLivrosTitulo/" + textoBusca + "/0";
-  }
-  else if (selectBusca == 'Autor'){
-    document.getElementById("formBusca").action = "/livros/buscarLivrosAutor/" + textoBusca + "/0";
-  }
-  document.getElementById("formBusca").submit();
-  loading();
 }
 
 function limpar_url(){
@@ -36,6 +37,20 @@ function submit(id){
   loading();
 }
 
+function fadeOutEffect() {
+    var fadeTarget = document.getElementById("alerta");
+    var fadeEffect = setInterval(function () {
+        if (!fadeTarget.style.opacity) {
+            fadeTarget.style.opacity = 1;
+        }
+        if (fadeTarget.style.opacity > 0) {
+            fadeTarget.style.opacity -= 0.1;
+        } else {
+            clearInterval(fadeEffect);
+        }
+    }, 300);
+}
+
 
 const myModal = document.getElementById('myModal')
 const myInput = document.getElementById('myInput')
@@ -43,3 +58,5 @@ const myInput = document.getElementById('myInput')
 myModal.addEventListener('shown.bs.modal', () => {
   myInput.focus()
 })
+
+

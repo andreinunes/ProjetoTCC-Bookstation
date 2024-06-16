@@ -77,7 +77,7 @@ class Livro_Genero(db.Model):
 
   @staticmethod
   def getGeneroChave(genero):
-    return dicionarioGeneros[genero]
+    return dicionarioGeneros.get(genero, '')
 
   @staticmethod
   def getColecaoGeneros(genero, page, per_page):

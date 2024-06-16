@@ -2,16 +2,14 @@
 {% block conteudo %}
 
 <div id = "Conteúdo" class = "container" style="padding-top:40px">
-   {% with messages = get_flashed_messages() %}
-      {% if messages %}
-      <div class="alert alert-warning" role="alert">
-      <ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alerta" role="alert" id = "alerta" name = "alerta" style = font-size:20px;>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </div>
+  {% endif %}
   {% endwith %}
   <div class="row">
     <div class="col-12" style = "position:absolute; top:6%; left:10%;">
@@ -25,7 +23,7 @@
       {% if livro.linkCapa%}
       <img src="{{livro.linkCapa}}" style = "border-radius:15px; width:110%;">
       {% else %}
-      <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:215.59px; height:296.44px; font-size:40px;" >{{livro.titulo}}{{livro.subtitulo}} </div>
+      <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "width:12vw; height:19.5vw; font-size:1.8vw;" >{{livro.titulo}} {{livro.subtitulo}} </div>
       {% endif %}
 
       {% if current_user.is_authenticated and existe == 0 %}  <!-- Inicio If se usuario está logado e o livro não está na lista dele -->
@@ -341,6 +339,8 @@
       loading();
     }
   }
+  fadeOutEffect();
+  document.title = '{{livro.titulo}}' + ' {{livro.subtitulo}}'
     
 </script>
 

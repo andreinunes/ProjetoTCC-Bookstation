@@ -76,4 +76,5 @@ def adicionar_nota_livro(livro_id,nota_livro):
       nota_livro = int(request.form['nota_livro'])
       lista_id = Usuario_Lista.get_id_lista(current_user.id,livro_id)
       retornoAdicaoNota = Lista_Livro.adicionar_nota_livro(lista_id,livro_id, nota_livro)
+    flash('Nota atualizada com sucesso')
     return  redirect(url_for(funcao_buscar_livro_id,id = livro_id))

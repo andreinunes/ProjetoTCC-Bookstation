@@ -1,7 +1,5 @@
 import pytest
 from flask import template_rendered
-from flask_login import LoginManager,current_user
-from modelos.usuarios_modelo import Usuario
 from database import db
 from app import create_app
 import os

@@ -4,7 +4,7 @@ from modelos.usuarios_modelo import Usuario
 from modelos.formularios_modelo import LoginForm
 from modelos.usuarios_listas_modelo import Usuario_Lista
 from modelos.usuarios_preferencias_modelo import Usuario_Preferencia
-from funcoes_auxiliares import verificar_forca_senha
+from funcoes_auxiliares import verificar_forca_senha, verificar_email
 
 def cadastrar():
   if current_user.is_authenticated:
@@ -13,10 +13,10 @@ def cadastrar():
     if request.method == 'GET':
       return render_template('cadastrar_usuario.html')
     elif request.method == 'POST':
-      nome = request.form['nomeUsuario']
-      email = request.form['emailUsuario']
-      senha = request.form['senhaUsuario']
-      csenha = request.form['confirmacaoSenhaUsuario']
+      nome = request.form['nomeUsuario'].strip()
+      email = request.form['emailUsuario'].strip()
+      senha = request.form['senhaUsuario'].strip()
+      csenha = request.form['confirmacaoSenhaUsuario'].strip()
   
       if senha != csenha:
         flash('Senhas incompativeis')
@@ -27,11 +27,17 @@ def cadastrar():
           return redirect(url_for('usuarios_bp.cadastrar'))
 
       if Usuario.cadastrar_usuario(nome, email, senha):
+        flash('Cadastrado com Sucesso')
         return redirect(url_for('indice'))
 
 def checar_senha():
   senha_entrada = request.args.get('senhaUsuario', '')
   resultado = verificar_forca_senha(senha_entrada)
+  return jsonify({"resultado": resultado})
+
+def checar_email():
+  email_entrada = request.args.get('emailUsuario', '')
+  resultado = verificar_email(email_entrada)
   return jsonify({"resultado": resultado})
 
 def login():
@@ -102,6 +108,7 @@ def atualizar_preferencias_usuario():
     elif request.method == 'POST':
       stringPreferencias = request.form['stringPreferencias']
       retornoAtualizaoPreferencias = Usuario_Preferencia.atualizar_preferencias_usuario(current_user.id,stringPreferencias)
+      flash('Preferências Atualizadas')
       return redirect(url_for('usuarios_bp.pagina_usuario'))
 
 

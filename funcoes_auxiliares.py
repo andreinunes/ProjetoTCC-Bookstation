@@ -14,6 +14,14 @@ def formatar_palavra_busca(palavraBusca):
 
   return palavraBusca
 
+def verificar_busca_caracteres_especiais(palavraBusca):
+  padrao = r'^[^a-zA-Z0-9\s]+$'
+
+  if re.match(padrao, palavraBusca):
+      return True
+  else:
+      return False
+
 def realizar_request_api(url):
   jsondata = json.loads(urllib.request.urlopen(url).read())
   return jsondata
@@ -51,6 +59,7 @@ def converter_data(data):
 
 
 def verificar_forca_senha(senha):
+  senha = senha.strip()
   tamanho_minimo = 8
   maiusculo_regex = re.compile(r'[A-Z]')
   minusculo_regex = re.compile(r'[a-z]')
@@ -71,6 +80,13 @@ def verificar_forca_senha(senha):
   
   return ""
 
+def verificar_email(email):
+  padrao = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+  if re.match(padrao, email):
+      return ""
+  else:
+      return "Formato de Email Inválido"
 
 def getDicionarioGeneros():
   
