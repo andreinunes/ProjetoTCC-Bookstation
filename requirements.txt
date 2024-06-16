@@ -58,5 +58,4 @@ urllib3
 w3lib              
 Werkzeug           
 WTForms     
-urllib
 urllib2
