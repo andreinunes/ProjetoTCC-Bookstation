@@ -97,7 +97,7 @@ function verificarCampos(){
   let senhaUsuario = document.getElementById('senhaUsuario').value;
   let confirmacaoSenhaUsuario = document.getElementById('confirmacaoSenhaUsuario').value;
 
-  if ((nomeUsuario == "") || (emailUsuario == "") || (senhaUsuario == "") || (confirmacaoSenhaUsuario == "")){
+  if ((nomeUsuario.trim() == "") || (emailUsuario.trim() == "") || (senhaUsuario.trim() == "") || (confirmacaoSenhaUsuario.trim() == "")){
     return false
   }
   else{

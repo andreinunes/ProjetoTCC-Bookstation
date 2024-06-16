@@ -5,7 +5,7 @@ function loading(){
 
 function submitBusca(){
   let textoBusca = document.getElementById("buscaLivro").value;
-  if (textoBusca == ''){
+  if (textoBusca.trim() == ''){
     alert('Preencha campo de busca');
   } else{
     let selectBusca = document.getElementById("selectBusca").value;

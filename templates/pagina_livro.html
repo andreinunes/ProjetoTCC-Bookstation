@@ -259,6 +259,13 @@
             </section>
           </div>
         {% endif %}
+        {% if livro.linkPreview%}
+          <div class="row" style = "padding:10px;">
+             <span style = "display:inline-flex;" > 
+              <img src="https://encrypted.google.com/intl/pt-BR/googlebooks/images/gbs_preview_button1.gif?hl=pt-br" alt = "Google Pré-visualização" onclick= "window.open('{{livro.linkPreview}}', '_blank');">
+              </span>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>

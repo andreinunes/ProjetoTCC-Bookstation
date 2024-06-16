@@ -15,7 +15,7 @@ class Busca_Livro():
 
   @staticmethod
   def buscar(busca, indiceInicial, tipoBusca):
-
+      
     verificacao_caracteres_especiais = verificar_busca_caracteres_especiais(busca)
     busca = formatar_palavra_busca(busca)
     livros = []
