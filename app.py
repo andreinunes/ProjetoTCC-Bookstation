@@ -80,9 +80,10 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
       session.modified = True
       g.user = current_user
 
-
   configure()
   app.debug = True
+  with app.app_context():
+    db.create_all()
   app.run(host='0.0.0.0',port=81)
   
   
@@ -90,6 +91,4 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
 
 if __name__ == '__main__':
     meu_app = create_app()
-    with app.app_context():
-        db.create_all()
     
