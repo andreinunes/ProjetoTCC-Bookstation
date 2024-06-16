@@ -57,4 +57,6 @@ tzdata
 urllib3            
 w3lib              
 Werkzeug           
-WTForms            
+WTForms     
+urllib
+urllib2
