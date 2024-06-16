@@ -8,6 +8,10 @@ from rotas.busca_livros_bp import busca_livros_bp
 from rotas.crud_livros_bp import crud_livros_bp
 from modelos.usuarios_modelo import Usuario
 from modelos.busca_livro_modelo import Busca_Livro
+from modelos.livros_generos_modelo import Livro_Genero
+from modelos.usuarios_preferencias_modelo import Usuario_Preferencia
+from modelos.listas_livros_modelo import Lista_Livro
+from modelos.usuarios_listas_modelo import Usuario_Lista
 from dotenv import load_dotenv
 import os
 
@@ -79,6 +83,8 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
   configure()
   app.debug = True
   app.run(host='0.0.0.0',port=81)
+  with app.app_context():
+    db.create_all()
   
   return app
 
