@@ -1,6 +1,7 @@
 import urllib.request, json, re
 from datetime import datetime
 from urllib.parse import quote
+import requests
 
 def remove_html_tags(texto):
   padrao_html = re.compile('<.*?>')
@@ -23,8 +24,8 @@ def verificar_busca_caracteres_especiais(palavraBusca):
       return False
 
 def realizar_request_api(url):
-  jsondata = json.loads(urllib.request.urlopen(url).read())
-  return jsondata
+  response = requests.get(url)
+  return response.json()
 
 
 def verificar_ISBNs(dicionario):
