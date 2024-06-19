@@ -82,14 +82,14 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
       g.user = current_user
 
   configure()
-  app.debug = True
+  #app.debug = True
   with app.app_context():
     db.create_all()
-  app.run(host='0.0.0.0',port=81)
+  #app.run(host='0.0.0.0',port=81)
   
   #Produção
-  #http_server = WSGIServer(('', 81), app)
-  #http_server.serve_forever()
+  http_server = WSGIServer(('', 81), app)
+  http_server.serve_forever()
   
   
   return app

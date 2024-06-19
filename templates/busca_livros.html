@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 
-{{dadoRetorno}}
-
 <script type="text/javascript">
         function auxiliar_busca(){ document.getElementById("buscaLivro").value = "{{textoBuscaLivro}}";}
         auxiliar_busca();
@@ -104,7 +102,6 @@
             <p class="fs-3">Não há resultados</p>
             <p class="lead">
                 Não há resultados de livros para sua busca: {{textoBuscaLivro}}
-              {{url}}
             </p>
         </div>
 </div>
