@@ -56,7 +56,7 @@ class Busca_Livro():
             dict_livro['categorias'] = generos_livro
             livros.append(dict_livro)
 
-    return [livros, url, possuiProximo,jsondata]
+    return [livros, url, possuiProximo,url]
 
   @staticmethod
   def buscar_por_genero(genero, per_page):
