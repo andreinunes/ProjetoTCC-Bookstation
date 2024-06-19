@@ -13,6 +13,7 @@ from modelos.usuarios_preferencias_modelo import Usuario_Preferencia
 from modelos.listas_livros_modelo import Lista_Livro
 from modelos.usuarios_listas_modelo import Usuario_Lista
 from dotenv import load_dotenv
+from gevent.pywsgi import WSGIServer
 import os
 
 
@@ -81,10 +82,14 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
       g.user = current_user
 
   configure()
-  app.debug = True
+  #app.debug = True
   with app.app_context():
     db.create_all()
-  app.run(host='0.0.0.0',port=81)
+  #app.run(host='0.0.0.0',port=81)
+  
+  #Produção
+  http_server = WSGIServer(('', 81), app)
+  http_server.serve_forever()
   
   
   return app

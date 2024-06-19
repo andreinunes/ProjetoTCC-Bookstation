@@ -15,6 +15,7 @@ flask-login = "^0.6.3"
 requests = "^2.31.0"
 python-dotenv = "^1.0.1"
 flask-wtf = "^1.2.1"
+gevent = "^24.2.1"
 
 
 [build-system]
