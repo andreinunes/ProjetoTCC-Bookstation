@@ -26,6 +26,7 @@ def buscar_por_autor(nomeAutor, indiceInicial):
   livros = retornoBusca[0]
   url = retornoBusca[1]
   possuiProximo = retornoBusca[2]
+  dadoRetorno = retornoBusca[3]
 
   return render_template(html_pagina_busca,
                          livros=livros,
@@ -34,7 +35,8 @@ def buscar_por_autor(nomeAutor, indiceInicial):
                          indiceInicial=indiceInicial,
                          textoBuscaLivro=nomeAutor,
                          tipoDeBusca='buscarLivrosAutor',
-                         tipoBusca='Autor')
+                         tipoBusca='Autor',
+                        dadoRetorno = dadoRetorno)
 
 
 def buscar_por_genero(genero):

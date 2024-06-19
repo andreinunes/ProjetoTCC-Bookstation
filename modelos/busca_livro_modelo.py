@@ -22,6 +22,7 @@ class Busca_Livro():
     url = ''
     urlSeguinte = ''
     possuiProximo = 0
+    jsondata = ''
     if not verificacao_caracteres_especiais:
         if tipoBusca == 'titulo':
     
@@ -55,7 +56,7 @@ class Busca_Livro():
             dict_livro['categorias'] = generos_livro
             livros.append(dict_livro)
 
-    return [livros, url, possuiProximo]
+    return [livros, url, possuiProximo,jsondata]
 
   @staticmethod
   def buscar_por_genero(genero, per_page):
