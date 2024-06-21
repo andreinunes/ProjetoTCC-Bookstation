@@ -49,7 +49,11 @@ def create_app(database_uri = 'sqlite:///weblivros.db'):
     livrosFantasia = buscaLivrosFantasia[1]
     livrosBiografia = buscaLivrosBiografia[1]
     livrosDrama= buscaLivrosDrama[1]
-    return render_template('indice.html', livrosFantasia = livrosFantasia, livrosBiografia = livrosBiografia, livrosDrama = livrosDrama )
+    if buscaLivrosFantasia[2] == 0:
+      return render_template('indice.html', livrosFantasia = livrosFantasia, livrosBiografia = livrosBiografia, livrosDrama = livrosDrama)
+    elif buscaLivrosFantasia[2] == 429:
+      return render_template('erro.html',erro = 429)
+      
   
   @app.route("/imagem_indisponivel.png") 
   def imagem_indisponivel(): 

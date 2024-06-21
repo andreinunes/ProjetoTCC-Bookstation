@@ -22,6 +22,7 @@ class Busca_Livro():
     url = ''
     urlSeguinte = ''
     possuiProximo = 0
+    erro = 0
     jsondata = ''
     if not verificacao_caracteres_especiais:
         if tipoBusca == 'titulo':
@@ -40,6 +41,9 @@ class Busca_Livro():
               busca, indiceInicial + 20, API_KEY)
     
         jsondata = realizar_request_api(url)
+        if 'error' in jsondata:
+            if jsondata['error']['code'] == 429:
+                erro = 429
         jsondataSeguinte = realizar_request_api(urlSeguinte)
     
         possuiProximo = 0
@@ -56,7 +60,7 @@ class Busca_Livro():
             dict_livro['categorias'] = generos_livro
             livros.append(dict_livro)
 
-    return [livros, url, possuiProximo]
+    return [livros, url, possuiProximo,erro]
 
   @staticmethod
   def buscar_por_genero(genero, per_page):
@@ -65,13 +69,18 @@ class Busca_Livro():
     colecao_genero = Livro_Genero.getColecaoGeneros(genero, page, per_page)
     livros = []
     jsondata = ""
+    erro = 0
     for item in colecao_genero.items:
       url = 'https://www.googleapis.com/books/v1/volumes/' + item.id_livro + auxiliar_chamada_api + API_KEY
       jsondata = realizar_request_api(url)
-      dict_livro = Usuario_Lista.gerar_dicionario(jsondata)
-      livros.append(dict_livro)
+      if 'volumeInfo' in jsondata:
+        dict_livro = Usuario_Lista.gerar_dicionario(jsondata)
+        livros.append(dict_livro)
+      if 'error' in jsondata:
+        if jsondata['error']['code'] == 429:
+            erro = 429
 
-    return [colecao_genero, livros]
+    return [colecao_genero, livros,erro]
 
   @staticmethod
   def buscar_livro_id(id=None):
@@ -121,5 +130,5 @@ class Busca_Livro():
               request.args.get('urlAtual'), livroExisteLista, emQueLista,
               existeEmFavoritos, notaLivro, media_livro
           ]
-    except urllib.error.HTTPError:
+    except KeyError:
         return [None, None, None, None, None, None, None]

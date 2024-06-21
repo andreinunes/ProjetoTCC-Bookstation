@@ -9,8 +9,11 @@ def buscar_por_titulo(nomeLivro, indiceInicial):
   livros = retornoBusca[0]
   url = retornoBusca[1]
   possuiProximo = retornoBusca[2]
+  erro = retornoBusca[3]
+
+  if erro == 0:
  
-  return render_template(html_pagina_busca,
+    return render_template(html_pagina_busca,
                          livros=livros,
                          url=url,
                          possuiProximo=possuiProximo,
@@ -18,6 +21,8 @@ def buscar_por_titulo(nomeLivro, indiceInicial):
                          textoBuscaLivro=nomeLivro,
                          tipoDeBusca='buscarLivrosTitulo',
                          tipoBusca='Titulo')
+  elif erro == 429:
+    return render_template('erro.html',erro = 429)
 
 
 def buscar_por_autor(nomeAutor, indiceInicial):
@@ -26,8 +31,10 @@ def buscar_por_autor(nomeAutor, indiceInicial):
   livros = retornoBusca[0]
   url = retornoBusca[1]
   possuiProximo = retornoBusca[2]
-
-  return render_template(html_pagina_busca,
+  erro = retornoBusca[3]
+  
+  if erro == 0:
+    return render_template(html_pagina_busca,
                          livros=livros,
                          url=url,
                          possuiProximo=possuiProximo,
@@ -35,6 +42,8 @@ def buscar_por_autor(nomeAutor, indiceInicial):
                          textoBuscaLivro=nomeAutor,
                          tipoDeBusca='buscarLivrosAutor',
                          tipoBusca='Autor')
+  elif erro == 429:
+    return render_template('erro.html',erro = 429)
 
 
 def buscar_por_genero(genero):
@@ -42,8 +51,11 @@ def buscar_por_genero(genero):
   retornoBuscaGenero = Busca_Livro.buscar_por_genero(genero,10)
   colecao_genero = retornoBuscaGenero[0]
   livros = retornoBuscaGenero[1]
-        
-  return render_template(html_pagina_busca, colecao_genero = colecao_genero, livros = livros, generoBuscado = genero)
+  erro = retornoBuscaGenero [2]
+  if erro == 0:
+    return render_template(html_pagina_busca, colecao_genero = colecao_genero, livros = livros, generoBuscado = genero)
+  elif erro == 429:
+    return render_template('erro.html', erro = 429)
 
 
 def buscar_livro_id(id = None):
