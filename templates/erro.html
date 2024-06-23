@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alerta" role="alert" id = "alerta" name = "alerta">
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endwith %}
+
 <div class="d-flex align-items-center justify-content-center vh-100">
           <div class="text-center">
             {% if erro == 404 %}
@@ -31,5 +41,8 @@
         </div>
 </div>
 
+<script>
+fadeOutEffect();
+</script>
 
 {% endblock conteudo %}
