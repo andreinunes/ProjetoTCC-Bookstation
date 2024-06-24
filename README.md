@@ -8,14 +8,14 @@ Projeto de criação de um website para organização e recomendação de livros
 
 ## Tópicos
 
-- [Estrutura do Projeto](#estrutura-do-projeto:-design-mvc-(model-view-controller))
+- [Estrutura do Projeto](#estrutura-do-projeto-design-mvc-model-view-controller)
 
 - [Funcionalidades](#funcionalidades)
 
 - [Observações](#observações)
 
 - [Tecnologias utilizadas](#tecnologias-utilizadas)
-- 
+  
 ## Estrutura do Projeto: Design MVC (Model-View-Controller)
 
 O projeto utiliza principalmente um design de arquitetura MVC. E possui também uma "camada" extra para o mapeamento das rotas do Flask.
