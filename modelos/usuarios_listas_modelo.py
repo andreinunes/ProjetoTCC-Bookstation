@@ -253,14 +253,21 @@ class Usuario_Lista(db.Model):
   @staticmethod
   def get_lista_livros_recomendados(usuario_id):
     livros_lidos = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
-                                                 tipo_lista="LL").first()
+       tipo_lista="LL").first()
     lendo_momento = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
-                                                  tipo_lista="LM").first()
+        tipo_lista="LM").first()
+    leituras_futuras = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista = "LF").first()
+    leituras_abandonadas = Usuario_Lista.query.filter_by(usuario_id=usuario_id, tipo_lista = "LA").first()
+
     lista_livros_lidos = Lista_Livro.query.filter_by(
         lista_id=livros_lidos.lista_id).all()
     lista_livros_momento = Lista_Livro.query.filter_by(
         lista_id=lendo_momento.lista_id).all()
-    merge_lista_livros = lista_livros_lidos + lista_livros_momento
+    lista_livros_leituras_futuras = Lista_Livro.query.filter_by(
+      lista_id=leituras_futuras.lista_id).all()
+    lista_livros_leituras_abandonadas = Lista_Livro.query.filter_by(
+      lista_id=leituras_abandonadas.lista_id).all()
+    merge_lista_livros = lista_livros_lidos + lista_livros_momento + lista_livros_leituras_futuras + lista_livros_leituras_abandonadas
 
     lista_generos = []
 
@@ -316,7 +323,7 @@ class Usuario_Lista(db.Model):
   @staticmethod
   def quantidade_livro_lista(usuario_id):
     livros_lidos = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
-                                                 tipo_lista="LL").first()
+                                                tipo_lista="LL").first()
     lendo_momento = Usuario_Lista.query.filter_by(usuario_id=usuario_id,
                                                   tipo_lista="LM").first()
     leituras_futuras = Usuario_Lista.query.filter_by(usuario_id=usuario_id,

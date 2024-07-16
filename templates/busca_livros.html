@@ -25,10 +25,10 @@
     <div class="row" style = "margin-left: auto; margin-right:auto; margin-bottom:10px; max-width:60%;border-radius:30px; padding:3px; background: linear-gradient(#4337d440, rgba(0, 0, 0, 0));">
       <div class="col-md-3">
         {% if livro.linkCapa%}
-        <img onclick = "submit('{{livro.id}}');" src="{{livro.linkCapa}}" style = "border-radius:30px;">
+        <img onclick = "submit('{{livro.id}}');" src="{{livro.linkCapa}}" style = "border-radius:30px;cursor:pointer;">
         {% else %}
 
-        <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "border-radius:30px; margin-left:15px;" role = "link" tabIndex="0" >
+        <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "border-radius:30px; margin-left:15px;cursor:pointer;" role = "link" tabIndex="0" >
           {{livro.titulo}} {{livro.subtitulo}}
         </div>
 
@@ -36,8 +36,8 @@
       </div>
   
         <div class = "col-md-9">
-          <h5>{{livro.titulo}}</h5>
-          <h6>{{livro.subtitulo}}</h6>
+          <h5 onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "cursor:pointer;">{{livro.titulo}}</h5>
+          <h6 onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "cursor:pointer;">{{livro.subtitulo}}</h6>
             {% if livro.autores%}
               Autor(es):
               {% for autores in livro.autores%}

@@ -73,12 +73,12 @@
         <div class = "col-md-2">
           {% if livro.linkCapa%}
           <div class = "capasLivrosListas">
-            <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}">
+            <img  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" src="{{livro.linkCapa}}" style = "cursor: pointer;">
             <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
           </div>
           {% else %}
           <div class = "capasLivrosListas">
-            <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';">
+            <div class = "capaLivro"  onclick="location.href = '/livros/paginalivro/' + '{{livro.id}}';" style = "cursor: pointer;">
               {{livro.titulo}} {{livro.subtitulo}}
             </div>
             <span class="tooltiptext">{{livro.titulo}} {{livro.subtitulo}} </span>
